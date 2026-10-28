@@ -34,7 +34,8 @@ smartEval/
 ├── docs/                     Documentation
 │   ├── SPEC.md               What we build and why
 │   ├── API_CONTRACT.md       Frontend ↔ backend agreement (frozen)
-│   ├── FRONTEND_AGENTS.md    Frontend scope and rules for coding agents
+│   ├── FRONTEND.md           Every screen, element, state and owner (F1/F2)
+│   ├── FRONTEND_AGENTS.md    Rules for frontend coding agents
 │   ├── FOLDER_STRUCTURE.md   This file
 │   └── poster.jpg            Project poster
 │

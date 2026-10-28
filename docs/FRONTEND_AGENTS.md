@@ -31,7 +31,8 @@ adapt. See [§8](#8-when-the-contract-is-wrong).
 
 ## 2. What to build
 
-Three screens. Full component inventory and the F1/F2 split:
+**Read [`FRONTEND.md`](./FRONTEND.md) first.** It lists every screen, every element,
+every state, every hook, and the F1/F2 split. This section is only the summary.
 
 | Screen | Route | Owner | Purpose |
 |---|---|---|---|
