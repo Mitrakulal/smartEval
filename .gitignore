@@ -6,11 +6,17 @@ __pycache__/
 venv/
 env/
 
-# Model / data artifacts
-data/answer_keys/*
-data/scripts/*
-!data/answer_keys/.gitkeep
-!data/scripts/.gitkeep
+# Node / frontend
+node_modules/
+dist/
+.vite/
+*.log
+
+# Runtime data (folders kept via .gitkeep, contents ignored)
+data/keys/*
+data/images/*
+!data/keys/.gitkeep
+!data/images/.gitkeep
 *.db
 *.sqlite3
 
