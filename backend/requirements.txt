@@ -1,0 +1,25 @@
+# Web
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+python-multipart
+
+# Answer-key parsing
+pdfplumber
+python-docx
+
+# Images
+pillow
+opencv-python-headless
+
+# Extraction
+google-genai
+
+# Scoring
+sentence-transformers
+pandas
+
+# Dev / test
+pytest
+httpx

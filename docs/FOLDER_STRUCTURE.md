@@ -19,10 +19,13 @@ smartEval/
 │   │   ├── core/             Config, database, job worker
 │   │   └── ml/               Vision, extraction, embeddings, scoring
 │   ├── tests/                pytest tests
-│   └── fixtures/             Sample JSON and sample images
+│   ├── fixtures/             Sample JSON and sample images
+│   └── requirements.txt      Python dependencies (.venv/ is gitignored)
 │
-├── frontend/                 React app (Vite + TypeScript)
-│   └── src/                  (created by the Vite scaffold — see below)
+├── frontend/                 React app (Vite 8, React 19, TypeScript 5.9)
+│   ├── src/                  Application code
+│   ├── vite.config.ts        Dev server + /api proxy → localhost:8000
+│   └── .env.example          Frontend env template
 │
 ├── data/                     Runtime uploads — gitignored
 │   ├── keys/                 Uploaded answer-key documents
@@ -55,20 +58,21 @@ smartEval/
 
 ### `frontend/`
 
-Not committed until scaffolded. Create it with:
+Scaffolded with **Vite 8 + React 19 + TypeScript 5.9**. Install with `npm install` inside the folder.
 
-```bash
-npm create vite@latest frontend -- --template react-ts
-```
-
-Expected layout afterwards:
-
-| Folder | Put here |
+| Path | Purpose |
 |---|---|
-| `src/routes/` | One file per screen: `Setup.tsx`, `Evaluate.tsx`, `Marksheet.tsx` |
-| `src/components/` | Reusable UI: `FlagBadge`, `MarkInput`, `KeyPointMatchList` |
-| `src/api/` | Generated OpenAPI types + the axios client |
-| `src/theme/` | MUI theme, layout, shared style constants |
+| `src/main.tsx` | Entry point |
+| `src/App.tsx` | Router + layout shell — keep it thin |
+| `src/routes/` | One file per screen: `Setup.tsx`, `Evaluate.tsx`, `Marksheet.tsx` *(create when needed)* |
+| `src/components/` | Reusable UI: `FlagBadge`, `MarkInput`, `KeyPointMatchList` *(create when needed)* |
+| `src/api/` | Generated OpenAPI types + the axios client *(create when needed)* |
+| `src/theme/` | MUI theme, layout, shared style constants *(create when needed)* |
+| `vite.config.ts` | Dev server config; `/api` proxies to `http://localhost:8000` |
+| `.env.example` | Committed template. Real `.env` is gitignored |
+
+> **TypeScript is pinned to 5.9**, not the version the Vite template ships.
+> `openapi-typescript` needs the TypeScript 5 compiler API; TypeScript 7 breaks it.
 
 ### `data/`
 
