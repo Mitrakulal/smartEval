@@ -1,0 +1,133 @@
+{
+  "usn": "4SF22CS001",
+  "name": "Asha Rao",
+  "total_marks": 11.0,
+  "max_marks": 15,
+  "answers": [
+    {
+      "answer_id": 11,
+      "question_id": 1,
+      "question_number": 1,
+      "question_text": "Explain Dijkstra's algorithm.",
+      "max_marks": 5,
+      "status": "evaluated",
+      "image_url": "/api/answers/11/image",
+      "transcript": "Dijkstra algorithm is used to find the shortest path from a source node to all other nodes in a weighted graph. It uses a priority queue to select the next node with the smallest distance. The algorithm assumes that all edge weights are non negative.",
+      "ocr_confidence": 0.81,
+      "key_points": [
+        {
+          "id": 7,
+          "text": "Finds the shortest path from a source node",
+          "covered": true,
+          "similarity": 0.84,
+          "borderline": false
+        },
+        {
+          "id": 8,
+          "text": "Uses a priority queue to pick the next node",
+          "covered": false,
+          "similarity": 0.52,
+          "borderline": true
+        },
+        {
+          "id": 9,
+          "text": "Requires non-negative edge weights",
+          "covered": true,
+          "similarity": 0.72,
+          "borderline": false
+        }
+      ],
+      "coverage": 0.67,
+      "covered_count": 2,
+      "key_point_count": 3,
+      "suggested_marks": 3.5,
+      "final_marks": 3.5,
+      "decision": "pending",
+      "flags": ["borderline"],
+      "needs_review": true,
+      "review_reason": null,
+      "evaluated_at": "2026-10-28T09:45:00Z"
+    },
+    {
+      "answer_id": 12,
+      "question_id": 2,
+      "question_number": 2,
+      "question_text": "Differentiate TCP and UDP.",
+      "max_marks": 5,
+      "status": "evaluated",
+      "image_url": "/api/answers/12/image",
+      "transcript": "TCP is connection oriented and provides reliable delivery with acknowledgements and retransmission. UDP is connectionless and does not guarantee delivery. UDP has less overhead and lower latency, so it is used for streaming and gaming.",
+      "ocr_confidence": 0.88,
+      "key_points": [
+        {
+          "id": 10,
+          "text": "TCP is connection oriented, UDP is connectionless",
+          "covered": true,
+          "similarity": 0.91,
+          "borderline": false
+        },
+        {
+          "id": 11,
+          "text": "TCP guarantees delivery, UDP does not",
+          "covered": true,
+          "similarity": 0.86,
+          "borderline": false
+        },
+        {
+          "id": 12,
+          "text": "UDP has lower overhead and latency",
+          "covered": true,
+          "similarity": 0.79,
+          "borderline": false
+        }
+      ],
+      "coverage": 1.0,
+      "covered_count": 3,
+      "key_point_count": 3,
+      "suggested_marks": 5.0,
+      "final_marks": 5.0,
+      "decision": "pending",
+      "flags": [],
+      "needs_review": false,
+      "review_reason": null,
+      "evaluated_at": "2026-10-28T09:47:00Z"
+    },
+    {
+      "answer_id": 13,
+      "question_id": 3,
+      "question_number": 3,
+      "question_text": "What is subnet masking?",
+      "max_marks": 5,
+      "status": "evaluated",
+      "image_url": "/api/answers/13/image",
+      "transcript": "A subnet mask is used to separate the network part and the host part of an IP address. It divides a large network into smaller subnetworks.",
+      "ocr_confidence": 0.48,
+      "key_points": [
+        {
+          "id": 13,
+          "text": "Separates the network portion from the host portion of an address",
+          "covered": true,
+          "similarity": 0.78,
+          "borderline": false
+        },
+        {
+          "id": 14,
+          "text": "Divides a network into smaller subnets",
+          "covered": false,
+          "similarity": 0.44,
+          "borderline": false
+        }
+      ],
+      "coverage": 0.5,
+      "covered_count": 1,
+      "key_point_count": 2,
+      "suggested_marks": 2.5,
+      "final_marks": 2.5,
+      "decision": "pending",
+      "flags": ["low_ocr_confidence"],
+      "needs_review": true,
+      "review_reason": null,
+      "evaluated_at": "2026-10-28T09:49:00Z"
+    }
+  ]
+}

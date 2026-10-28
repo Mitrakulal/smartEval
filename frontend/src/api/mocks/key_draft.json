@@ -1,0 +1,42 @@
+{
+  "draft_id": "d_9f2a",
+  "filename": "cn_cie1_key.pdf",
+  "questions": [
+    {
+      "number": 1,
+      "text": "Explain Dijkstra's algorithm.",
+      "max_marks": 5,
+      "grading_mode": "semantic",
+      "key_points": [
+        { "text": "Finds the shortest path from a source node", "confidence": "parsed" },
+        { "text": "Uses a priority queue to pick the next node", "confidence": "parsed" },
+        { "text": "Requires non-negative edge weights", "confidence": "guessed" }
+      ],
+      "confidence": { "text": "parsed", "max_marks": "parsed" }
+    },
+    {
+      "number": 2,
+      "text": "Differentiate TCP and UDP.",
+      "max_marks": 5,
+      "grading_mode": "semantic",
+      "key_points": [
+        { "text": "TCP is connection oriented, UDP is connectionless", "confidence": "parsed" },
+        { "text": "TCP guarantees delivery, UDP does not", "confidence": "parsed" },
+        { "text": "UDP has lower overhead and latency", "confidence": "parsed" }
+      ],
+      "confidence": { "text": "parsed", "max_marks": "guessed" }
+    },
+    {
+      "number": 3,
+      "text": "What is subnet masking?",
+      "max_marks": 5,
+      "grading_mode": "semantic",
+      "key_points": [
+        { "text": "Separates the network portion from the host portion of an address", "confidence": "parsed" },
+        { "text": "Divides a network into smaller subnets", "confidence": "guessed" }
+      ],
+      "confidence": { "text": "parsed", "max_marks": "missing" }
+    }
+  ],
+  "warnings": ["No marks found for Q3 — defaulted to 5"]
+}

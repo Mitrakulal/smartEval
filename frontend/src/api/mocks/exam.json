@@ -1,0 +1,10 @@
+{
+  "state": "READY",
+  "subject": "Computer Networks",
+  "point_threshold": 0.55,
+  "borderline_band": 0.1,
+  "question_count": 3,
+  "student_count": 2,
+  "key_filename": "cn_cie1_key.pdf",
+  "updated_at": "2026-10-28T09:30:00Z"
+}

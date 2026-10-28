@@ -33,6 +33,8 @@ smartEval/
 │
 ├── docs/                     Documentation
 │   ├── SPEC.md               What we build and why
+│   ├── API_CONTRACT.md       Frontend ↔ backend agreement (frozen)
+│   ├── FRONTEND_AGENTS.md    Frontend scope and rules for coding agents
 │   ├── FOLDER_STRUCTURE.md   This file
 │   └── poster.jpg            Project poster
 │
@@ -67,6 +69,7 @@ Scaffolded with **Vite 8 + React 19 + TypeScript 5.9**. Install with `npm instal
 | `src/routes/` | One file per screen: `Setup.tsx`, `Evaluate.tsx`, `Marksheet.tsx` *(create when needed)* |
 | `src/components/` | Reusable UI: `FlagBadge`, `MarkInput`, `KeyPointMatchList` *(create when needed)* |
 | `src/api/` | Generated OpenAPI types + the axios client *(create when needed)* |
+| `src/api/mocks/` | **Committed.** Fake responses matching `docs/API_CONTRACT.md`, used when `VITE_MOCK=1` |
 | `src/theme/` | MUI theme, layout, shared style constants *(create when needed)* |
 | `vite.config.ts` | Dev server config; `/api` proxies to `http://localhost:8000` |
 | `.env.example` | Committed template. Real `.env` is gitignored |
@@ -103,7 +106,7 @@ imported by the app. Delete or ignore once the question is answered.
 | A component used by two screens | `frontend/src/components/` |
 | A component used by one screen | Inside that screen's file until it's reused |
 | An experiment or notebook | `spike/` |
-| Sample JSON for mocks | `backend/fixtures/` |
+| Sample JSON for mocks | `frontend/src/api/mocks/` (frontend) or `backend/fixtures/` (backend tests) |
 | A decision or design note | `docs/` |
 
 ---
