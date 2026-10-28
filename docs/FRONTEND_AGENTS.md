@@ -60,6 +60,10 @@ frontend/src/api/mocks/*.json
 
 Mapping to endpoints is at the bottom of [`API_CONTRACT.md`](./API_CONTRACT.md).
 
+All response types live in **`src/api/types.ts`** — hand-written from the contract for
+now, because the backend has no OpenAPI schema yet. Every component imports from there;
+no component defines its own response shape.
+
 Implement one switch in `src/api/client.ts`:
 
 ```
@@ -108,7 +112,7 @@ default MUI buttons.
 | Language | TypeScript, strict. **No `any`** — use `unknown` and narrow |
 | Components | Function components + hooks only. One component per file. Named exports |
 | Data fetching | Always through TanStack Query hooks in `src/hooks/`. No `fetch`/`axios` inside a component |
-| Types | Generated from the backend's OpenAPI. Do not hand-write response types |
+| Types | Single source: `src/api/types.ts`, mirroring the schemas in `API_CONTRACT.md` one-to-one. **Backend has no OpenAPI yet** — write them by hand now, swap to generated types later in one commit |
 | State | Query for server state, `useState`/context for UI. No Redux, no Zustand |
 | Errors | Every query/mutation renders an error state. No silent catches |
 | Dependencies | **Ask before adding any.** The list in `package.json` is the budget |

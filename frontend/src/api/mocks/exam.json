@@ -6,5 +6,31 @@
   "question_count": 3,
   "student_count": 2,
   "key_filename": "cn_cie1_key.pdf",
+  "questions": [
+    {
+      "question_id": 1,
+      "number": 1,
+      "text": "Explain Dijkstra's algorithm.",
+      "max_marks": 5,
+      "grading_mode": "semantic",
+      "key_point_count": 3
+    },
+    {
+      "question_id": 2,
+      "number": 2,
+      "text": "Differentiate TCP and UDP.",
+      "max_marks": 5,
+      "grading_mode": "semantic",
+      "key_point_count": 3
+    },
+    {
+      "question_id": 3,
+      "number": 3,
+      "text": "What is subnet masking?",
+      "max_marks": 5,
+      "grading_mode": "semantic",
+      "key_point_count": 2
+    }
+  ],
   "updated_at": "2026-10-28T09:30:00Z"
 }

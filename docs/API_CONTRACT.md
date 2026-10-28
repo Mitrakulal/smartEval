@@ -1,6 +1,6 @@
 # API Contract
 
-**Version 1.0 · 2026-10-28**
+**Version 1.1 · 2026-10-28**
 
 This is the agreement between `frontend/` and `backend/`.
 
@@ -112,6 +112,11 @@ Poll every **2 seconds**. Stop polling when `status` is `done` or `error`.
   "question_count": 3,
   "student_count": 2,
   "key_filename": "cn_cie1_key.pdf",
+  "questions": [
+    { "question_id": 1, "number": 1, "text": "Explain Dijkstra's algorithm.", "max_marks": 5, "grading_mode": "semantic", "key_point_count": 3 },
+    { "question_id": 2, "number": 2, "text": "Differentiate TCP and UDP.", "max_marks": 5, "grading_mode": "semantic", "key_point_count": 3 },
+    { "question_id": 3, "number": 3, "text": "What is subnet masking?", "max_marks": 5, "grading_mode": "semantic", "key_point_count": 2 }
+  ],
   "updated_at": "2026-10-28T09:30:00Z"
 }
 ```
@@ -122,6 +127,16 @@ Poll every **2 seconds**. Stop polling when `status` is `done` or `error`.
 | `point_threshold` | float | `0.40 – 0.75` |
 | `borderline_band` | float | `0.05 – 0.20` |
 | `key_filename` | string \| null | Original upload name |
+| `questions` | `ExamQuestion[]` | Empty array when `state == "NO_KEY"`. Ordered by `number` |
+
+### `ExamQuestion`
+
+```json
+{ "question_id": 1, "number": 1, "text": "...", "max_marks": 5, "grading_mode": "semantic", "key_point_count": 3 }
+```
+
+Light enough to live on `ExamState`. Used by Evaluate to render question tabs before a
+student is selected. The full key points still come from `KeyDraft` and `Answer`.
 
 ### `KeyDraft`
 
@@ -374,3 +389,13 @@ Frontend works against these until the backend exists:
 | `frontend/src/api/mocks/marksheet.json` | `GET /api/exam/marksheet` |
 
 Enable with `VITE_MOCK=1`. No backend required.
+
+---
+
+## Changelog
+
+| Version | Date | Change |
+|---|---|---|
+| 1.1 | 2026-10-28 | Added `questions: ExamQuestion[]` to `ExamState` so Evaluate can render tabs before a student is selected |
+| 1.0 | 2026-10-28 | First frozen version |
+
