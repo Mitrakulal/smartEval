@@ -7,6 +7,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -72,6 +73,7 @@ export function Setup() {
   // UI state
   const [isResetDialogOpen, setIsResetDialogOpen] = useState<boolean>(false);
   const [isManualEntryMode, setIsManualEntryMode] = useState<boolean>(false);
+  const [isReplacingKey, setIsReplacingKey] = useState<boolean>(false);
 
   // Derive active settings
   const subjectInput = localSubject ?? exam?.subject ?? 'Computer Networks';
@@ -104,6 +106,7 @@ export function Setup() {
     setLocalUploadedFile(file);
     setDraftFilename(file.name);
     setIsManualEntryMode(false);
+    setIsReplacingKey(false);
 
     try {
       const draft = await parseKeyMutation.mutateAsync(file);
@@ -301,13 +304,24 @@ export function Setup() {
         onCommit={handleSliderCommit}
       />
 
-      {/* Dropzone: Shown in NO_KEY or when user is replacing draft */}
-      {(isNoKey || (currentState === 'KEY_PARSED' && questions.length === 0)) && (
-        <FileDropzone
-          onFileSelect={handleFileSelect}
-          isLoading={parseKeyMutation.isPending}
-          disabled={isFinal}
-        />
+      {/* Dropzone: NO_KEY, a failed/replaced draft, or an explicit replace request */}
+      {(isNoKey ||
+        isReplacingKey ||
+        (currentState === 'KEY_PARSED' && questions.length === 0)) && (
+        <>
+          <FileDropzone
+            onFileSelect={handleFileSelect}
+            isLoading={parseKeyMutation.isPending}
+            disabled={isFinal}
+          />
+          {isReplacingKey && (
+            <Box sx={{ mt: -1.5, mb: 3, textAlign: 'right' }}>
+              <Button size="small" onClick={() => setIsReplacingKey(false)}>
+                Keep current draft
+              </Button>
+            </Box>
+          )}
+        </>
       )}
 
       {/* Parse failed notice */}
@@ -329,26 +343,40 @@ export function Setup() {
 
       {/* Two-Pane Layout when questions exist (KEY_PARSED / READY / FINAL) */}
       {isParsed && (
-        <Grid container spacing={3}>
-          {/* Left Pane: PDF / Document Preview */}
-          <Grid size={{ xs: 12, md: 5 }}>
-            <PdfPreview
-              fileBlob={localUploadedFile || keyFileBlob}
-              filename={draftFilename || exam.key_filename}
-              isLoading={isKeyFileLoading && !localUploadedFile}
-            />
-          </Grid>
+        <>
+          {currentState === 'KEY_PARSED' && !isReplacingKey && (
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
+              <Button
+                size="small"
+                startIcon={<FileUploadIcon />}
+                onClick={() => setIsReplacingKey(true)}
+              >
+                Replace answer key
+              </Button>
+            </Box>
+          )}
 
-          {/* Right Pane: Editable or Read-Only Question List */}
-          <Grid size={{ xs: 12, md: 7 }}>
-            <QuestionList
-              questions={questions}
-              disabled={isReady || isFinal}
-              showConfidence={!isReady && !isFinal}
-              onChange={setLocalDraftQuestions}
-            />
+          <Grid container spacing={3}>
+            {/* Left Pane: PDF / Document Preview */}
+            <Grid size={{ xs: 12, md: 5 }}>
+              <PdfPreview
+                fileBlob={localUploadedFile || keyFileBlob}
+                filename={draftFilename || exam.key_filename}
+                isLoading={isKeyFileLoading && !localUploadedFile}
+              />
+            </Grid>
+
+            {/* Right Pane: Editable or Read-Only Question List */}
+            <Grid size={{ xs: 12, md: 7 }}>
+              <QuestionList
+                questions={questions}
+                disabled={isReady || isFinal}
+                showConfidence={!isReady && !isFinal}
+                onChange={setLocalDraftQuestions}
+              />
+            </Grid>
           </Grid>
-        </Grid>
+        </>
       )}
 
       {/* Validation Summary and Confirm Bar in KEY_PARSED / Editing state */}
