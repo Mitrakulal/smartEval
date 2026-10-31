@@ -58,7 +58,7 @@ export function Setup() {
   const resetExamMutation = useResetExam();
 
   // Local state for draft editing
-  const [draftId, setDraftId] = useState<string>('d_draft');
+  const [draftId, setDraftId] = useState<string | null>(null);
   const [draftFilename, setDraftFilename] = useState<string>('');
   const [localDraftQuestions, setLocalDraftQuestions] = useState<DraftQuestion[] | null>(null);
   const [parseWarnings, setParseWarnings] = useState<string[]>([]);

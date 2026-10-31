@@ -87,7 +87,8 @@ export interface ConfirmQuestion {
 }
 
 export interface ConfirmKeyRequest {
-  draft_id: string;
+  /** `null` when the lecturer entered questions manually after a parse failure. */
+  draft_id: string | null;
   questions: ConfirmQuestion[];
 }
 

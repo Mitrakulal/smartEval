@@ -1,6 +1,6 @@
 # API Contract
 
-**Version 1.2 · 2026-10-28**
+**Version 1.3 · 2026-10-28**
 
 This is the agreement between `frontend/` and `backend/`.
 
@@ -225,6 +225,9 @@ Returned by `parse`. **Nothing is committed yet.**
 
 Frontend may change anything the lecturer edited. `confidence` is dropped.
 
+`draft_id` is `null` when parsing failed and the lecturer typed the questions manually.
+The backend creates the questions directly from the request body in that case.
+
 ### `SettingsRequest`
 
 All fields optional.
@@ -437,6 +440,7 @@ Enable with `VITE_MOCK=1`. No backend required.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.3 | 2026-10-28 | `ConfirmKeyRequest.draft_id` may be `null` for manually entered keys |
 | 1.2 | 2026-10-28 | `ExamQuestion` now carries `key_points`; `key_point_count` removed |
 | 1.1 | 2026-10-28 | Added `questions: ExamQuestion[]` to `ExamState` so Evaluate can render tabs before a student is selected |
 | 1.0 | 2026-10-28 | First frozen version |
