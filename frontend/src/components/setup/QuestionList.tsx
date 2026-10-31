@@ -104,7 +104,7 @@ export function QuestionList({ questions, disabled = false, onChange }: Question
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           {questions.map((q, index) => (
             <QuestionRow
-              key={`${q.number}-${index}`}
+              key={index}
               question={q}
               index={index}
               totalQuestions={questions.length}
