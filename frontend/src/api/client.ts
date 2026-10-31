@@ -12,8 +12,7 @@ import rawExamMock from './mocks/exam.json';
 import rawKeyDraftMock from './mocks/key_draft.json';
 import rawMarksheetMock from './mocks/marksheet.json';
 
-export const isMockMode =
-  import.meta.env.VITE_MOCK === '1' || import.meta.env.VITE_MOCK === undefined;
+export const isMockMode = import.meta.env.VITE_MOCK === '1';
 
 export const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
