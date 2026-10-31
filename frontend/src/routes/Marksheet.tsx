@@ -7,14 +7,16 @@ import Chip from '@mui/material/Chip';
 import DownloadIcon from '@mui/icons-material/Download';
 import { useNavigate } from 'react-router-dom';
 import { useExam } from '../hooks/useExam.ts';
-import { useMarksheet, useDownloadMarksheetCsv } from '../hooks/useMarksheet.ts';
+import { useMarksheet, useApproveExam, useDownloadMarksheetCsv } from '../hooks/useMarksheet.ts';
 import { useSnackbar } from '../hooks/useSnackbar.ts';
 import { extractApiError } from '../api/client.ts';
 import { StateBanner } from '../components/common/StateBanner.tsx';
 import { LoadingState } from '../components/common/LoadingState.tsx';
 import { ErrorState } from '../components/common/ErrorState.tsx';
 import { EmptyState } from '../components/common/EmptyState.tsx';
+import { ConfirmDialog } from '../components/common/ConfirmDialog.tsx';
 import { MarksheetTable } from '../components/marksheet/MarksheetTable.tsx';
+import { ApproveBar } from '../components/marksheet/ApproveBar.tsx';
 
 type RowFilter = 'all' | 'review' | 'incomplete';
 
@@ -30,7 +32,9 @@ export function Marksheet() {
   const { data: exam } = useExam();
   const { data: sheet, isLoading, error, refetch } = useMarksheet();
   const exportMutation = useDownloadMarksheetCsv();
+  const approveMutation = useApproveExam();
   const [filter, setFilter] = useState<RowFilter>('all');
+  const [isApproveOpen, setIsApproveOpen] = useState(false);
 
   const filteredRows = useMemo(() => {
     if (!sheet) return [];
@@ -52,6 +56,32 @@ export function Marksheet() {
     exportMutation.mutate(undefined, {
       onSuccess: () => showSuccess('Marksheet CSV downloaded'),
       onError: (err: unknown) => showError(`Export failed: ${extractApiError(err).message}`),
+    });
+  };
+
+  const handleApprove = () => {
+    approveMutation.mutate(undefined, {
+      onSuccess: () => {
+        setIsApproveOpen(false);
+        showSuccess('Exam approved and locked');
+      },
+      onError: (err: unknown) => {
+        const apiErr = extractApiError(err);
+        if (apiErr.code === 'UNREVIEWED_ANSWERS') {
+          const detail = apiErr.detail;
+          const count =
+            detail && typeof detail === 'object' && 'count' in detail
+              ? Number((detail as { count: unknown }).count)
+              : NaN;
+          showError(
+            Number.isFinite(count)
+              ? `${count} ${count === 1 ? 'answer still needs' : 'answers still need'} review. Open Evaluate to review them.`
+              : 'Some answers still need review. Open Evaluate to review them.'
+          );
+        } else {
+          showError(`Approval failed: ${apiErr.message}`);
+        }
+      },
     });
   };
 
@@ -137,8 +167,27 @@ export function Marksheet() {
           ) : (
             <MarksheetTable sheet={sheet} rows={filteredRows} />
           )}
+
+          <ApproveBar
+            examState={exam?.state}
+            needsReviewCount={
+              sheet.rows.filter((row) => row.flags > 0 && row.review_status === 'pending').length
+            }
+            isApproving={approveMutation.isPending}
+            onApprove={() => setIsApproveOpen(true)}
+          />
         </>
       )}
+
+      <ConfirmDialog
+        open={isApproveOpen}
+        title="Approve and lock this exam?"
+        message="Marks become read-only and no further answers can be edited. The CSV stays available. This cannot be undone."
+        confirmText="Approve & lock"
+        isLoading={approveMutation.isPending}
+        onConfirm={handleApprove}
+        onCancel={() => setIsApproveOpen(false)}
+      />
     </Box>
   );
 }
