@@ -165,7 +165,11 @@ export function Marksheet() {
               </Typography>
             </Paper>
           ) : (
-            <MarksheetTable sheet={sheet} rows={filteredRows} />
+            <MarksheetTable
+              sheet={sheet}
+              rows={filteredRows}
+              onRowClick={(usn) => navigate(`/evaluate?usn=${encodeURIComponent(usn)}`)}
+            />
           )}
 
           <ApproveBar
