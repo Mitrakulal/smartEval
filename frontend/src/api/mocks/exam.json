@@ -13,7 +13,11 @@
       "text": "Explain Dijkstra's algorithm.",
       "max_marks": 5,
       "grading_mode": "semantic",
-      "key_point_count": 3
+      "key_points": [
+        { "id": 7, "text": "Finds the shortest path from a source node" },
+        { "id": 8, "text": "Uses a priority queue to pick the next node" },
+        { "id": 9, "text": "Requires non-negative edge weights" }
+      ]
     },
     {
       "question_id": 2,
@@ -21,7 +25,11 @@
       "text": "Differentiate TCP and UDP.",
       "max_marks": 5,
       "grading_mode": "semantic",
-      "key_point_count": 3
+      "key_points": [
+        { "id": 10, "text": "TCP is connection oriented, UDP is connectionless" },
+        { "id": 11, "text": "TCP guarantees delivery, UDP does not" },
+        { "id": 12, "text": "UDP has lower overhead and latency" }
+      ]
     },
     {
       "question_id": 3,
@@ -29,7 +37,10 @@
       "text": "What is subnet masking?",
       "max_marks": 5,
       "grading_mode": "semantic",
-      "key_point_count": 2
+      "key_points": [
+        { "id": 13, "text": "Separates the network portion from the host portion of an address" },
+        { "id": 14, "text": "Divides a network into smaller subnets" }
+      ]
     }
   ],
   "updated_at": "2026-10-28T09:30:00Z"

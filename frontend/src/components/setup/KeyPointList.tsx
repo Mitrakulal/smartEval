@@ -11,10 +11,16 @@ import type { DraftKeyPoint } from '../../api/types.ts';
 interface KeyPointListProps {
   keyPoints: DraftKeyPoint[];
   disabled?: boolean;
+  showConfidence?: boolean;
   onChange: (updatedPoints: DraftKeyPoint[]) => void;
 }
 
-export function KeyPointList({ keyPoints, disabled = false, onChange }: KeyPointListProps) {
+export function KeyPointList({
+  keyPoints,
+  disabled = false,
+  showConfidence = true,
+  onChange,
+}: KeyPointListProps) {
   const handleTextChange = (index: number, newText: string) => {
     const updated = [...keyPoints];
     updated[index] = { ...updated[index], text: newText };
@@ -86,7 +92,7 @@ export function KeyPointList({ keyPoints, disabled = false, onChange }: KeyPoint
                   '& .MuiInputBase-input': { fontSize: '0.85rem' },
                 }}
               />
-              <ConfidenceBadge confidence={kp.confidence} />
+              {showConfidence && <ConfidenceBadge confidence={kp.confidence} />}
               {!disabled && (
                 <IconButton
                   size="small"

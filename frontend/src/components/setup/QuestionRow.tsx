@@ -19,6 +19,7 @@ interface QuestionRowProps {
   index: number;
   totalQuestions: number;
   disabled?: boolean;
+  showConfidence?: boolean;
   isDuplicateNumber?: boolean;
   onChange: (updatedQuestion: DraftQuestion) => void;
   onDelete: () => void;
@@ -31,6 +32,7 @@ export function QuestionRow({
   index,
   totalQuestions,
   disabled = false,
+  showConfidence = true,
   isDuplicateNumber = false,
   onChange,
   onDelete,
@@ -67,10 +69,12 @@ export function QuestionRow({
           <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
             Question #{question.number}
           </Typography>
-          <Box sx={{ display: 'flex', gap: 0.5 }}>
-            <ConfidenceBadge confidence={question.confidence?.text} />
-            <ConfidenceBadge confidence={question.confidence?.max_marks} />
-          </Box>
+          {showConfidence && (
+            <Box sx={{ display: 'flex', gap: 0.5 }}>
+              <ConfidenceBadge confidence={question.confidence?.text} />
+              <ConfidenceBadge confidence={question.confidence?.max_marks} />
+            </Box>
+          )}
         </Box>
 
         {!disabled && (
@@ -164,6 +168,7 @@ export function QuestionRow({
       <KeyPointList
         keyPoints={question.key_points}
         disabled={disabled}
+        showConfidence={showConfidence}
         onChange={handleKeyPointsChange}
       />
     </Paper>

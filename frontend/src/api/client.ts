@@ -116,18 +116,20 @@ export async function parseKeyFile(file: File): Promise<KeyDraft> {
 export async function confirmExamKey(req: ConfirmKeyRequest): Promise<ExamState> {
   if (isMockMode) {
     await delay(400);
+    let nextKeyPointId = 1;
+    const questions = req.questions.map((q, idx) => ({
+      question_id: idx + 1,
+      number: q.number,
+      text: q.text,
+      max_marks: q.max_marks,
+      grading_mode: q.grading_mode,
+      key_points: q.key_points.map((kp) => ({ id: nextKeyPointId++, text: kp.text })),
+    }));
     mockExamState = {
       ...mockExamState,
       state: 'READY',
-      question_count: req.questions.length,
-      questions: req.questions.map((q, idx) => ({
-        question_id: idx + 1,
-        number: q.number,
-        text: q.text,
-        max_marks: q.max_marks,
-        grading_mode: q.grading_mode,
-        key_point_count: q.key_points.length,
-      })),
+      question_count: questions.length,
+      questions,
       updated_at: new Date().toISOString(),
     };
     return JSON.parse(JSON.stringify(mockExamState)) as ExamState;

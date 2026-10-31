@@ -1,6 +1,6 @@
 # API Contract
 
-**Version 1.1 · 2026-10-28**
+**Version 1.2 · 2026-10-28**
 
 This is the agreement between `frontend/` and `backend/`.
 
@@ -113,9 +113,41 @@ Poll every **2 seconds**. Stop polling when `status` is `done` or `error`.
   "student_count": 2,
   "key_filename": "cn_cie1_key.pdf",
   "questions": [
-    { "question_id": 1, "number": 1, "text": "Explain Dijkstra's algorithm.", "max_marks": 5, "grading_mode": "semantic", "key_point_count": 3 },
-    { "question_id": 2, "number": 2, "text": "Differentiate TCP and UDP.", "max_marks": 5, "grading_mode": "semantic", "key_point_count": 3 },
-    { "question_id": 3, "number": 3, "text": "What is subnet masking?", "max_marks": 5, "grading_mode": "semantic", "key_point_count": 2 }
+    {
+      "question_id": 1,
+      "number": 1,
+      "text": "Explain Dijkstra's algorithm.",
+      "max_marks": 5,
+      "grading_mode": "semantic",
+      "key_points": [
+        { "id": 7, "text": "Finds the shortest path from a source node" },
+        { "id": 8, "text": "Uses a priority queue to pick the next node" },
+        { "id": 9, "text": "Requires non-negative edge weights" }
+      ]
+    },
+    {
+      "question_id": 2,
+      "number": 2,
+      "text": "Differentiate TCP and UDP.",
+      "max_marks": 5,
+      "grading_mode": "semantic",
+      "key_points": [
+        { "id": 10, "text": "TCP is connection oriented, UDP is connectionless" },
+        { "id": 11, "text": "TCP guarantees delivery, UDP does not" },
+        { "id": 12, "text": "UDP has lower overhead and latency" }
+      ]
+    },
+    {
+      "question_id": 3,
+      "number": 3,
+      "text": "What is subnet masking?",
+      "max_marks": 5,
+      "grading_mode": "semantic",
+      "key_points": [
+        { "id": 13, "text": "Separates the network portion from the host portion of an address" },
+        { "id": 14, "text": "Divides a network into smaller subnets" }
+      ]
+    }
   ],
   "updated_at": "2026-10-28T09:30:00Z"
 }
@@ -132,11 +164,20 @@ Poll every **2 seconds**. Stop polling when `status` is `done` or `error`.
 ### `ExamQuestion`
 
 ```json
-{ "question_id": 1, "number": 1, "text": "...", "max_marks": 5, "grading_mode": "semantic", "key_point_count": 3 }
+{
+  "question_id": 1,
+  "number": 1,
+  "text": "...",
+  "max_marks": 5,
+  "grading_mode": "semantic",
+  "key_points": [{ "id": 7, "text": "..." }]
+}
 ```
 
-Light enough to live on `ExamState`. Used by Evaluate to render question tabs before a
-student is selected. The full key points still come from `KeyDraft` and `Answer`.
+Carries the confirmed key points so Setup can redisplay the exam after a reload
+without inventing placeholder text. `id` is stable for the life of the exam.
+
+Used by Evaluate to render question tabs before a student is selected.
 
 ### `KeyDraft`
 
@@ -396,6 +437,7 @@ Enable with `VITE_MOCK=1`. No backend required.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.2 | 2026-10-28 | `ExamQuestion` now carries `key_points`; `key_point_count` removed |
 | 1.1 | 2026-10-28 | Added `questions: ExamQuestion[]` to `ExamState` so Evaluate can render tabs before a student is selected |
 | 1.0 | 2026-10-28 | First frozen version |
 

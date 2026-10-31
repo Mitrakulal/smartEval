@@ -24,13 +24,18 @@ export type ReviewStatus = 'pending' | 'reviewed';
 
 /* ---------- exam ---------- */
 
+export interface ExamKeyPoint {
+  id: number;
+  text: string;
+}
+
 export interface ExamQuestion {
   question_id: number;
   number: number;
   text: string;
   max_marks: number;
   grading_mode: GradingMode;
-  key_point_count: number;
+  key_points: ExamKeyPoint[];
 }
 
 export interface ExamState {

@@ -8,10 +8,11 @@ import type { DraftQuestion } from '../../api/types.ts';
 interface QuestionListProps {
   questions: DraftQuestion[];
   disabled?: boolean;
+  showConfidence?: boolean;
   onChange: (updatedQuestions: DraftQuestion[]) => void;
 }
 
-export function QuestionList({ questions, disabled = false, onChange }: QuestionListProps) {
+export function QuestionList({ questions, disabled = false, showConfidence = true, onChange }: QuestionListProps) {
   // Find duplicate numbers for validation highlighting
   const numberCounts = questions.reduce<Record<number, number>>((acc, q) => {
     acc[q.number] = (acc[q.number] || 0) + 1;
@@ -110,6 +111,7 @@ export function QuestionList({ questions, disabled = false, onChange }: Question
               totalQuestions={questions.length}
               disabled={disabled}
               isDuplicateNumber={numberCounts[q.number] > 1}
+              showConfidence={showConfidence}
               onChange={(updated) => handleQuestionChange(index, updated)}
               onDelete={() => handleDelete(index)}
               onMoveUp={() => handleMoveUp(index)}

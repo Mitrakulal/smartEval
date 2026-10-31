@@ -89,8 +89,8 @@ export function Setup() {
         text: q.text,
         max_marks: q.max_marks,
         grading_mode: q.grading_mode,
-        key_points: Array.from({ length: q.key_point_count || 1 }).map((_, i) => ({
-          text: `Key point ${i + 1} for question ${q.number}`,
+        key_points: q.key_points.map((kp) => ({
+          text: kp.text,
           confidence: 'parsed' as const,
         })),
         confidence: { text: 'parsed' as const, max_marks: 'parsed' as const },
@@ -344,6 +344,7 @@ export function Setup() {
             <QuestionList
               questions={questions}
               disabled={isReady || isFinal}
+              showConfidence={!isReady && !isFinal}
               onChange={setLocalDraftQuestions}
             />
           </Grid>
