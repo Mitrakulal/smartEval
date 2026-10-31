@@ -37,7 +37,8 @@ smartEval/
 │   ├── FRONTEND.md           Every screen, element, state and owner (F1/F2)
 │   ├── FRONTEND_AGENTS.md    Rules for frontend coding agents
 │   ├── FOLDER_STRUCTURE.md   This file
-│   └── poster.jpg            Project poster
+│   ├── poster.jpg            Project poster
+│   └── samples/              Committed demo inputs (answer keys + generator)
 │
 ├── spike/                    Throwaway experiments and notebooks
 │
@@ -91,6 +92,10 @@ folders exist on clone. Wiped freely; nothing here is source code.
 
 Everything a human or another agent needs to understand the project. New documentation
 goes here, never loose in the root.
+
+`docs/samples/` holds **committed demo inputs**, currently the Computer Networks answer
+key used to exercise Setup and the parser. `CN_CIE1_AnswerKey.docx` is generated from
+`generate_cn_key.py`; edit the script and re-run it rather than editing the binary.
 
 ### `spike/`
 
