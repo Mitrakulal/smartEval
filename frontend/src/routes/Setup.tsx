@@ -38,6 +38,11 @@ import type {
   ConfirmKeyRequest,
 } from '../api/types.ts';
 
+interface SliderSettings {
+  pointThreshold: number;
+  borderlineBand: number;
+}
+
 export function Setup() {
   const navigate = useNavigate();
   const { showSuccess, showError } = useSnackbar();
@@ -124,23 +129,35 @@ export function Setup() {
     }
   };
 
-  // Handle settings change
+  // Slider drags only update the display; the PATCH waits for onChangeCommitted.
   const handleSliderChange = ({
     pointThreshold: newThresh,
     borderlineBand: newBand,
-  }: {
-    pointThreshold: number;
-    borderlineBand: number;
-  }) => {
+  }: SliderSettings) => {
+    setLocalPointThreshold(newThresh);
+    setLocalBorderlineBand(newBand);
+  };
+
+  const handleSliderCommit = ({
+    pointThreshold: newThresh,
+    borderlineBand: newBand,
+  }: SliderSettings) => {
     setLocalPointThreshold(newThresh);
     setLocalBorderlineBand(newBand);
 
-    if (exam && (exam.state === 'READY' || exam.state === 'KEY_PARSED')) {
-      settingsMutation.mutate({
+    if (!exam || exam.state === 'FINAL') return;
+
+    settingsMutation.mutate(
+      {
         point_threshold: newThresh,
         borderline_band: newBand,
-      });
-    }
+      },
+      {
+        onError: (err: unknown) => {
+          showError(`Could not save thresholds: ${extractApiError(err).message}`);
+        },
+      }
+    );
   };
 
   const handleSubjectBlur = () => {
@@ -281,6 +298,7 @@ export function Setup() {
         borderlineBand={borderlineBand}
         disabled={isFinal}
         onChange={handleSliderChange}
+        onCommit={handleSliderCommit}
       />
 
       {/* Dropzone: Shown in NO_KEY or when user is replacing draft */}

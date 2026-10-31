@@ -3,12 +3,14 @@ import Typography from '@mui/material/Typography';
 import Slider from '@mui/material/Slider';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
+import type { SyntheticEvent } from 'react';
 
 interface SliderFieldProps {
   pointThreshold: number;
   borderlineBand: number;
   disabled?: boolean;
   onChange: (settings: { pointThreshold: number; borderlineBand: number }) => void;
+  onCommit: (settings: { pointThreshold: number; borderlineBand: number }) => void;
 }
 
 export function SliderField({
@@ -16,6 +18,7 @@ export function SliderField({
   borderlineBand,
   disabled = false,
   onChange,
+  onCommit,
 }: SliderFieldProps) {
   const handleThresholdChange = (_: Event, value: number | number[]) => {
     onChange({
@@ -26,6 +29,20 @@ export function SliderField({
 
   const handleBandChange = (_: Event, value: number | number[]) => {
     onChange({
+      pointThreshold,
+      borderlineBand: value as number,
+    });
+  };
+
+  const handleThresholdCommit = (_: Event | SyntheticEvent, value: number | number[]) => {
+    onCommit({
+      pointThreshold: value as number,
+      borderlineBand,
+    });
+  };
+
+  const handleBandCommit = (_: Event | SyntheticEvent, value: number | number[]) => {
+    onCommit({
       pointThreshold,
       borderlineBand: value as number,
     });
@@ -59,6 +76,7 @@ export function SliderField({
               disabled={disabled}
               valueLabelDisplay="auto"
               onChange={handleThresholdChange}
+              onChangeCommitted={handleThresholdCommit}
             />
             <Typography variant="caption" color="text.secondary">
               Minimum similarity score to award key point coverage (default 0.55).
@@ -84,6 +102,7 @@ export function SliderField({
               disabled={disabled}
               valueLabelDisplay="auto"
               onChange={handleBandChange}
+              onChangeCommitted={handleBandCommit}
             />
             <Typography variant="caption" color="text.secondary">
               Scores within this distance from threshold trigger borderline review flag (default 0.10).
