@@ -1,47 +1,11 @@
 {
-  "state": "READY",
+  "state": "NO_KEY",
   "subject": "Computer Networks",
   "point_threshold": 0.55,
   "borderline_band": 0.1,
-  "question_count": 3,
-  "student_count": 2,
-  "key_filename": "cn_cie1_key.pdf",
-  "questions": [
-    {
-      "question_id": 1,
-      "number": 1,
-      "text": "Explain Dijkstra's algorithm.",
-      "max_marks": 5,
-      "grading_mode": "semantic",
-      "key_points": [
-        { "id": 7, "text": "Finds the shortest path from a source node" },
-        { "id": 8, "text": "Uses a priority queue to pick the next node" },
-        { "id": 9, "text": "Requires non-negative edge weights" }
-      ]
-    },
-    {
-      "question_id": 2,
-      "number": 2,
-      "text": "Differentiate TCP and UDP.",
-      "max_marks": 5,
-      "grading_mode": "semantic",
-      "key_points": [
-        { "id": 10, "text": "TCP is connection oriented, UDP is connectionless" },
-        { "id": 11, "text": "TCP guarantees delivery, UDP does not" },
-        { "id": 12, "text": "UDP has lower overhead and latency" }
-      ]
-    },
-    {
-      "question_id": 3,
-      "number": 3,
-      "text": "What is subnet masking?",
-      "max_marks": 5,
-      "grading_mode": "semantic",
-      "key_points": [
-        { "id": 13, "text": "Separates the network portion from the host portion of an address" },
-        { "id": 14, "text": "Divides a network into smaller subnets" }
-      ]
-    }
-  ],
+  "question_count": 0,
+  "student_count": 0,
+  "key_filename": null,
+  "questions": [],
   "updated_at": "2026-10-28T09:30:00Z"
 }
