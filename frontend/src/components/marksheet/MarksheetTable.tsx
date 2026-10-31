@@ -7,6 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Chip from '@mui/material/Chip';
+import Typography from '@mui/material/Typography';
 import type { Marksheet, MarksheetRow } from '../../api/types.ts';
 
 interface MarksheetTableProps {
@@ -36,7 +37,9 @@ export function MarksheetTable({ sheet, rows, onRowClick }: MarksheetTableProps)
               <TableCell key={question.question_id} align="center">
                 Q{question.number}
                 <br />
-                <span style={{ fontWeight: 400, fontSize: '0.75rem' }}>({question.max_marks})</span>
+                <Typography component="span" variant="caption" color="text.secondary">
+                  ({question.max_marks})
+                </Typography>
               </TableCell>
             ))}
             <TableCell align="right">Total</TableCell>
@@ -50,7 +53,25 @@ export function MarksheetTable({ sheet, rows, onRowClick }: MarksheetTableProps)
               key={row.usn}
               hover={Boolean(onRowClick)}
               onClick={onRowClick ? () => onRowClick(row.usn) : undefined}
-              sx={{ cursor: onRowClick ? 'pointer' : 'default' }}
+              onKeyDown={
+                onRowClick
+                  ? (event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        onRowClick(row.usn);
+                      }
+                    }
+                  : undefined
+              }
+              tabIndex={onRowClick ? 0 : undefined}
+              sx={{
+                cursor: onRowClick ? 'pointer' : 'default',
+                '&:focus-visible': {
+                  outline: '2px solid',
+                  outlineColor: 'primary.main',
+                  outlineOffset: -2,
+                },
+              }}
             >
               <TableCell component="th" scope="row">
                 {row.usn}
