@@ -151,7 +151,7 @@ that sells the project.
 | Element | Behaviour |
 |---|---|
 | `MarksheetTable` | USN, name, Q1..Qn, total, max, flags, review status |
-| Cell rendering | Blank when not evaluated; flag icon on flagged answers |
+| Cell rendering | Blank when not evaluated; flag **count** per row (the marksheet API exposes counts, not per-answer flags) |
 | Filter chips | All / Needs review / Incomplete |
 | Row click | Navigates to `/evaluate` with that USN selected |
 | Totals row | Class average, max, flagged count |
@@ -196,6 +196,7 @@ that sells the project.
 | 20 | `ResultPanel` | F2 | 2 |
 | 21 | `FlagBadge` | F2 | 2, 3 *(F1 imports)* |
 | 22 | `MarkInput` | F2 | 2, 3 *(F1 imports)* |
+| 23 | `ApproveBar` | F1 | 3 |
 
 ## Hooks
 

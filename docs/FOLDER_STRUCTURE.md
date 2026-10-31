@@ -37,7 +37,8 @@ smartEval/
 │   ├── FRONTEND.md           Every screen, element, state and owner (F1/F2)
 │   ├── FRONTEND_AGENTS.md    Rules for frontend coding agents
 │   ├── FOLDER_STRUCTURE.md   This file
-│   └── poster.jpg            Project poster
+│   ├── poster.jpg            Project poster
+│   └── samples/              Committed demo inputs (answer keys + generator)
 │
 ├── spike/                    Throwaway experiments and notebooks
 │
@@ -66,14 +67,18 @@ Scaffolded with **Vite 8 + React 19 + TypeScript 5.9**. Install with `npm instal
 | Path | Purpose |
 |---|---|
 | `src/main.tsx` | Entry point |
-| `src/App.tsx` | Router + layout shell — keep it thin |
-| `src/routes/` | One file per screen: `Setup.tsx`, `Evaluate.tsx`, `Marksheet.tsx` *(create when needed)* |
-| `src/components/` | Reusable UI: `FlagBadge`, `MarkInput`, `KeyPointMatchList` *(create when needed)* |
-| `src/api/` | Generated OpenAPI types + the axios client *(create when needed)* |
-| `src/api/mocks/` | **Committed.** Fake responses matching `docs/API_CONTRACT.md`, used when `VITE_MOCK=1` |
-| `src/theme/` | MUI theme, layout, shared style constants *(create when needed)* |
+| `src/App.tsx` | Router + providers + layout shell — keep it thin |
+| `src/routes/` | One file per screen: `Setup.tsx`, `Evaluate.tsx`, `Marksheet.tsx` |
+| `src/components/common/` | Shared states and dialogs: `LoadingState`, `ErrorState`, `EmptyState`, `StateBanner`, `ConfirmDialog` |
+| `src/components/setup/` | Setup-only components |
+| `src/components/marksheet/` | Marksheet-only components: `MarksheetTable`, `ApproveBar` |
+| `src/components/` (root) | Components shared across screens: `FlagBadge`, `MarkInput` |
+| `src/api/` | Hand-written contract types (`types.ts`) + the axios client with the mock switch |
+| `src/api/mocks/` | **Committed.** Fake responses matching `docs/API_CONTRACT.md`, enabled in dev via `.env.development` |
+| `src/theme/` | MUI theme tokens only — palette, spacing, radius, type scale |
 | `vite.config.ts` | Dev server config; `/api` proxies to `http://localhost:8000` |
 | `.env.example` | Committed template. Real `.env` is gitignored |
+| `.env.development` | **Committed.** Sets `VITE_MOCK=1` for `npm run dev` only; production builds use the real API |
 
 > **TypeScript is pinned to 5.9**, not the version the Vite template ships.
 > `openapi-typescript` needs the TypeScript 5 compiler API; TypeScript 7 breaks it.
@@ -87,6 +92,10 @@ folders exist on clone. Wiped freely; nothing here is source code.
 
 Everything a human or another agent needs to understand the project. New documentation
 goes here, never loose in the root.
+
+`docs/samples/` holds **committed demo inputs**, currently the Computer Networks answer
+key used to exercise Setup and the parser. `CN_CIE1_AnswerKey.docx` is generated from
+`generate_cn_key.py`; edit the script and re-run it rather than editing the binary.
 
 ### `spike/`
 
@@ -105,7 +114,7 @@ imported by the app. Delete or ignore once the question is answered.
 | A new job type | `backend/app/core/` |
 | A new screen | `frontend/src/routes/` |
 | A component used by two screens | `frontend/src/components/` |
-| A component used by one screen | Inside that screen's file until it's reused |
+| A component used by one screen | `frontend/src/components/<screen>/` |
 | An experiment or notebook | `spike/` |
 | Sample JSON for mocks | `frontend/src/api/mocks/` (frontend) or `backend/fixtures/` (backend tests) |
 | A decision or design note | `docs/` |
