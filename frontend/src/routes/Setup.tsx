@@ -121,7 +121,7 @@ export function Setup() {
       setIsManualEntryMode(true);
       setLocalDraftQuestions([
         {
-          number: 1,
+          number: '1',
           text: '',
           max_marks: 5,
           grading_mode: 'semantic',
@@ -183,7 +183,7 @@ export function Setup() {
     }
 
     const confirmQuestions: ConfirmQuestion[] = questions.map((q) => ({
-      number: q.number,
+      number: q.number.trim(),
       text: q.text.trim(),
       max_marks: q.max_marks,
       grading_mode: q.grading_mode,
