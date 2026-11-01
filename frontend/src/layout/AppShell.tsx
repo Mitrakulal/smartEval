@@ -7,6 +7,7 @@ import Chip from '@mui/material/Chip';
 import { Outlet } from 'react-router-dom';
 import { NavStepper } from './NavStepper.tsx';
 import { useExam } from '../hooks/useExam.ts';
+import { RouteErrorBoundary } from '../components/common/RouteErrorBoundary.tsx';
 import { isMockMode } from '../api/client.ts';
 
 export function AppShell() {
@@ -63,7 +64,9 @@ export function AppShell() {
       </Box>
 
       <Container component="main" maxWidth="lg" sx={{ flexGrow: 1, py: 3 }}>
-        <Outlet />
+        <RouteErrorBoundary>
+          <Outlet />
+        </RouteErrorBoundary>
       </Container>
     </Box>
   );
