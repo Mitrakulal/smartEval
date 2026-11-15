@@ -206,6 +206,9 @@ without touching the API, the scoring, or the UI.
 > This indirection is the single most important design decision in the document.
 > It is what makes the OCR risk survivable instead of fatal.
 
+> The optional cloud adapter (Gemini) and its rollout rules are documented in
+> `docs/GEMINI.md`. The default path described above stays local.
+
 ---
 
 ## 6. Scoring
