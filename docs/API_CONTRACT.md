@@ -1,6 +1,6 @@
 # API Contract
 
-**Version 1.3 · 2026-10-28**
+**Version 1.4 · 2026-11-01**
 
 This is the agreement between `frontend/` and `backend/`.
 
@@ -22,6 +22,7 @@ mock files in `frontend/src/api/mocks/` from day one and must not invent fields.
 | Content type | `application/json`, except uploads (`multipart/form-data`) and binaries (`image/*`, `text/csv`, `application/pdf`) |
 | Timestamps | ISO 8601 UTC — `2026-10-28T09:30:00Z` |
 | IDs | Database rows → integers. Drafts and jobs → strings (`"d_9f2a"`, `"j_7c1"`) |
+| Question numbers | Free-form strings, not integers — `"1"`, `"1a"`, `"2b"`, `"4(c)"`. Displayed verbatim |
 | Marks | Floats, 0.5 precision — `3.5`, not `"3.5"` |
 | Nullability | Always send the key. Use `null` — never omit a field |
 | Lists | Bare JSON arrays. No `{data: [...]}` envelopes (marksheet is the exception: it carries metadata) |
@@ -115,7 +116,7 @@ Poll every **2 seconds**. Stop polling when `status` is `done` or `error`.
   "questions": [
     {
       "question_id": 1,
-      "number": 1,
+      "number": "1a",
       "text": "Explain Dijkstra's algorithm.",
       "max_marks": 5,
       "grading_mode": "semantic",
@@ -127,7 +128,7 @@ Poll every **2 seconds**. Stop polling when `status` is `done` or `error`.
     },
     {
       "question_id": 2,
-      "number": 2,
+      "number": "1b",
       "text": "Differentiate TCP and UDP.",
       "max_marks": 5,
       "grading_mode": "semantic",
@@ -139,7 +140,7 @@ Poll every **2 seconds**. Stop polling when `status` is `done` or `error`.
     },
     {
       "question_id": 3,
-      "number": 3,
+      "number": "2a",
       "text": "What is subnet masking?",
       "max_marks": 5,
       "grading_mode": "semantic",
@@ -159,20 +160,25 @@ Poll every **2 seconds**. Stop polling when `status` is `done` or `error`.
 | `point_threshold` | float | `0.40 – 0.75` |
 | `borderline_band` | float | `0.05 – 0.20` |
 | `key_filename` | string \| null | Original upload name |
-| `questions` | `ExamQuestion[]` | Empty array when `state == "NO_KEY"`. Ordered by `number` |
+| `questions` | `ExamQuestion[]` | Empty array when `state == "NO_KEY"`. Displayed in array order |
 
 ### `ExamQuestion`
 
 ```json
 {
   "question_id": 1,
-  "number": 1,
+  "number": "1a",
   "text": "...",
   "max_marks": 5,
   "grading_mode": "semantic",
   "key_points": [{ "id": 7, "text": "..." }]
 }
 ```
+
+`number` is a **free-form label**, not an integer. `"1"`, `"1a"`, `"2b"` and
+`"4(c)"` are all valid; the frontend prints it verbatim (`Q1a` in the marksheet,
+`Question 1a` in Evaluate). Numbers must be unique within an exam after trimming.
+The backend stores the string and never parses it, so do not sort on it.
 
 Carries the confirmed key points so Setup can redisplay the exam after a reload
 without inventing placeholder text. `id` is stable for the life of the exam.
@@ -189,7 +195,7 @@ Returned by `parse`. **Nothing is committed yet.**
   "filename": "cn_cie1_key.pdf",
   "questions": [
     {
-      "number": 1,
+      "number": "1a",
       "text": "Explain Dijkstra's algorithm.",
       "max_marks": 5,
       "grading_mode": "semantic",
@@ -213,7 +219,7 @@ Returned by `parse`. **Nothing is committed yet.**
   "draft_id": "d_9f2a",
   "questions": [
     {
-      "number": 1,
+      "number": "1a",
       "text": "Explain Dijkstra's algorithm.",
       "max_marks": 5,
       "grading_mode": "semantic",
@@ -272,7 +278,7 @@ One object per question. **Always present**, even before upload.
 {
   "answer_id": 11,
   "question_id": 1,
-  "question_number": 1,
+  "question_number": "1a",
   "question_text": "Explain Dijkstra's algorithm.",
   "max_marks": 5,
   "status": "evaluated",
@@ -338,9 +344,9 @@ On error: `error` is `{"code": "...", "message": "..."}` and `answer_id` is stil
   "subject": "Computer Networks",
   "max_marks": 15,
   "questions": [
-    { "question_id": 1, "number": 1, "max_marks": 5 },
-    { "question_id": 2, "number": 2, "max_marks": 5 },
-    { "question_id": 3, "number": 3, "max_marks": 5 }
+    { "question_id": 1, "number": "1a", "max_marks": 5 },
+    { "question_id": 2, "number": "1b", "max_marks": 5 },
+    { "question_id": 3, "number": "2a", "max_marks": 5 }
   ],
   "rows": [
     {
@@ -411,11 +417,11 @@ Every non-2xx response:
 `GET /api/exam/marksheet.csv` — `text/csv`, UTF-8, comma separated.
 
 ```
-USN,Name,Q1,Q2,Q3,Total,Max,Flags,Review_Status
+USN,Name,Q1a,Q1b,Q2a,Total,Max,Flags,Review_Status
 4SF22CS001,Asha Rao,4.5,3.0,3.5,11.0,15,1,pending
 ```
 
-Blank cell = not evaluated.
+One column per question, headed `Q` + the question number (`Q1a`). Blank cell = not evaluated.
 
 ---
 
@@ -440,6 +446,7 @@ Enable with `VITE_MOCK=1`. No backend required.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.4 | 2026-11-01 | Question `number` is now a string so sub-question labels (`"1a"`, `"2b"`) are preserved end to end |
 | 1.3 | 2026-10-28 | `ConfirmKeyRequest.draft_id` may be `null` for manually entered keys |
 | 1.2 | 2026-10-28 | `ExamQuestion` now carries `key_points`; `key_point_count` removed |
 | 1.1 | 2026-10-28 | Added `questions: ExamQuestion[]` to `ExamState` so Evaluate can render tabs before a student is selected |

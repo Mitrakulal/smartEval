@@ -31,7 +31,8 @@ export interface ExamKeyPoint {
 
 export interface ExamQuestion {
   question_id: number;
-  number: number;
+  /** Free-form label: "1", "2", "1a", "2b". Displayed verbatim. */
+  number: string;
   text: string;
   max_marks: number;
   grading_mode: GradingMode;
@@ -63,7 +64,7 @@ export interface QuestionConfidence {
 }
 
 export interface DraftQuestion {
-  number: number;
+  number: string;
   text: string;
   max_marks: number;
   grading_mode: GradingMode;
@@ -79,7 +80,7 @@ export interface KeyDraft {
 }
 
 export interface ConfirmQuestion {
-  number: number;
+  number: string;
   text: string;
   max_marks: number;
   grading_mode: GradingMode;
@@ -123,7 +124,7 @@ export interface MatchedKeyPoint {
 export interface Answer {
   answer_id: number | null;
   question_id: number;
-  question_number: number;
+  question_number: string;
   question_text: string;
   max_marks: number;
   status: AnswerStatus;
@@ -182,7 +183,7 @@ export interface UploadResponse {
 
 export interface MarksheetQuestion {
   question_id: number;
-  number: number;
+  number: string;
   max_marks: number;
 }
 

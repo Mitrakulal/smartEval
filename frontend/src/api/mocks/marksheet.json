@@ -2,9 +2,9 @@
   "subject": "Computer Networks",
   "max_marks": 15,
   "questions": [
-    { "question_id": 1, "number": 1, "max_marks": 5 },
-    { "question_id": 2, "number": 2, "max_marks": 5 },
-    { "question_id": 3, "number": 3, "max_marks": 5 }
+    { "question_id": 1, "number": "1", "max_marks": 5 },
+    { "question_id": 2, "number": "2", "max_marks": 5 },
+    { "question_id": 3, "number": "3", "max_marks": 5 }
   ],
   "rows": [
     {
