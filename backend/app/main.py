@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.exam import router as exam_router
+from app.api.students import router as students_router
 from app.core.config import settings
 from app.core.db import init_db
 from app.core.errors import register_error_handlers
@@ -36,6 +37,7 @@ register_error_handlers(app)
 
 # Mount API routers
 app.include_router(exam_router, prefix="/api")
+app.include_router(students_router, prefix="/api")
 
 
 @app.get("/health")

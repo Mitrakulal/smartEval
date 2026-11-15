@@ -18,7 +18,7 @@ Status values: `todo` | `doing` | `done` | `blocked`
 | **WP2** | API Request & Response Schemas | Wave 1 | Dev A (worker_schemas) | `backend/app/api/schemas.py` | WP1 | **done** |
 | **Gate 1** | Wave 1 Gate Check (`uvicorn` start & `GET /api/exam`) | Wave 1 Gate | Coordinator / Dev A | Server runtime verification | WP1, WP2 | **done** |
 | **WP3** | Exam & Key Lifecycle Endpoints | Wave 2 | Dev A (worker_exam) | `backend/app/api/exam.py` | Gate 1 | **done** |
-| **WP4** | Students Management Endpoints | Wave 2 | Dev A (worker_students) | `backend/app/api/students.py` | Gate 1 | **todo** |
+| **WP4** | Students Management Endpoints | Wave 2 | Dev A (worker_students) | `backend/app/api/students.py` | Gate 1 | **done** |
 | **WP5** | Answers & Jobs Endpoints | Wave 2 | Dev A (worker_answers) | `backend/app/api/answers.py`<br>`backend/app/api/jobs.py` | Gate 1 | **todo** |
 | **WP6** | Marksheet & Approve Endpoints | Wave 2 | Dev A (worker_marksheet) | `backend/app/api/marksheet.py` | Gate 1 | **todo** |
 | **WP7** | Demo Seed Script | Wave 3 | Dev A (worker_seed) | `backend/fixtures/demo_seed.py` | WP3, WP4, WP5, WP6 | **todo** |
@@ -66,11 +66,11 @@ Status values: `todo` | `doing` | `done` | `blocked`
   - [x] `GET /api/exam/key/file` (stream stored file or return 404 `"No key file associated with this exam"`).
   - [x] `POST /api/exam/reset` (clear DB tables and files in `data/keys/` and `data/images/`, preserving dirs & `.gitkeep`).
   - [x] Guard: Rejects `parse`/`confirm` when state is `FINAL` with `409 WRONG_STATE`.
-- [ ] **WP4: Students Management Router (`backend/app/api/students.py`)**
-  - [ ] Guard: Rejects requests when state is `NO_KEY` with `409 WRONG_STATE`.
-  - [ ] `POST /api/students` (create student; reject duplicate with `409 DUPLICATE_USN` unless `replace=true`).
-  - [ ] `GET /api/students` (list students with `answered`, `total`, `average`, `flags`, `status`).
-  - [ ] `GET /api/students/{usn}` (detail view; returns an `Answer` object for every confirmed question in sequence).
+- [x] **WP4: Students Management Router (`backend/app/api/students.py`)**
+  - [x] Guard: Rejects requests when state is `NO_KEY` with `409 WRONG_STATE`.
+  - [x] `POST /api/students` (create student; reject duplicate with `409 DUPLICATE_USN` unless `replace=true`).
+  - [x] `GET /api/students` (list students with `answered`, `total`, `average`, `flags`, `status`).
+  - [x] `GET /api/students/{usn}` (detail view; returns an `Answer` object for every confirmed question in sequence).
 - [ ] **WP5: Answers & Jobs Router (`backend/app/api/answers.py`, `backend/app/api/jobs.py`)**
   - [ ] Guard: Rejects requests when state is `NO_KEY` with `409 WRONG_STATE`.
   - [ ] `POST /api/students/{usn}/answers/{question_id}` (validates file mime/size, returns `202 {"job_id": "j_..."}`).
@@ -134,8 +134,8 @@ Status values: `todo` | `doing` | `done` | `blocked`
 
 | # | Approved Decision | Implementation Target | Verification Check | Status |
 |:---|:---|:---|:---|:---:|
-| 1 | `StudentSummary.average = round(sum(marks) / answered, 1)` if `answered > 0`, else `null` | `app/api/students.py` | Student list calculation test | pending |
-| 2 | `StudentSummary.flags = number of evaluated answers with at least one flag` | `app/api/students.py` | Distinct flagged answers count | pending |
+| 1 | `StudentSummary.average = round(sum(marks) / answered, 1)` if `answered > 0`, else `null` | `app/api/students.py` | Student list calculation test | verified |
+| 2 | `StudentSummary.flags = number of evaluated answers with at least one flag` | `app/api/students.py` | Distinct flagged answers count | verified |
 | 3 | `needs_review = bool(flags)` persists after review; approve blocks only when `needs_review == true` AND `decision == "pending"` | `app/api/answers.py`<br>`app/api/marksheet.py` | Approve guard test | pending |
 | 4 | `POST /api/exam/reset` clears DB rows AND files in `data/keys/` and `data/images/`, keeping directories and `.gitkeep` | `app/api/exam.py` | Reset filesystem cleanup test | verified |
 | 5 | `GET /api/exam/key/file` returns 404 NOT_FOUND with message `"No key file associated with this exam"` when no key file exists | `app/api/exam.py` | Key file 404 test | verified |
@@ -143,6 +143,8 @@ Status values: `todo` | `doing` | `done` | `blocked`
 ---
 
 ## 4. Updates & Changelog
+
+- **2026-11-15T21:35:00Z**: Completed WP4 Students Management Router (`backend/app/api/students.py`, `backend/app/main.py`). Implemented `POST /api/students` (with ?replace=true support and duplicate USN guard), `GET /api/students` (with computed metrics per Approved Decisions 1 & 2), and `GET /api/students/{usn}` (with full synthesized pending Answer[] array per Rules 5 & 6 and Approved Decision 3). All 12 verification checks passed.
 
 - **2026-11-15T21:15:00Z**: Completed Wave 1 Gate Check and WP3 Exam & Key Management Router (`backend/app/api/exam.py`, `backend/app/main.py`). All 6 endpoints (`GET /api/exam`, `POST /api/exam/key/parse`, `POST /api/exam/key/confirm`, `PATCH /api/exam/settings`, `GET /api/exam/key/file`, `POST /api/exam/reset`), approved decisions 4 & 5, and state guards verified.
 
