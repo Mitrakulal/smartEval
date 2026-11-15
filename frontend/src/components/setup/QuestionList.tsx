@@ -12,10 +12,20 @@ interface QuestionListProps {
   onChange: (updatedQuestions: DraftQuestion[]) => void;
 }
 
+function nextQuestionNumber(questions: DraftQuestion[]): string {
+  const used = new Set(questions.map((question) => question.number.trim()));
+  let candidate = questions.length + 1;
+  while (used.has(String(candidate))) {
+    candidate += 1;
+  }
+  return String(candidate);
+}
+
 export function QuestionList({ questions, disabled = false, showConfidence = true, onChange }: QuestionListProps) {
   // Find duplicate numbers for validation highlighting
-  const numberCounts = questions.reduce<Record<number, number>>((acc, q) => {
-    acc[q.number] = (acc[q.number] || 0) + 1;
+  const numberCounts = questions.reduce<Record<string, number>>((acc, q) => {
+    const number = q.number.trim();
+    acc[number] = (acc[number] || 0) + 1;
     return acc;
   }, {});
 
@@ -51,9 +61,8 @@ export function QuestionList({ questions, disabled = false, showConfidence = tru
   };
 
   const handleAddQuestion = () => {
-    const nextNumber = questions.length > 0 ? Math.max(...questions.map((q) => q.number)) + 1 : 1;
     const newQuestion: DraftQuestion = {
-      number: nextNumber,
+      number: nextQuestionNumber(questions),
       text: '',
       max_marks: 5,
       grading_mode: 'semantic',
@@ -110,7 +119,7 @@ export function QuestionList({ questions, disabled = false, showConfidence = tru
               index={index}
               totalQuestions={questions.length}
               disabled={disabled}
-              isDuplicateNumber={numberCounts[q.number] > 1}
+              isDuplicateNumber={numberCounts[q.number.trim()] > 1}
               showConfidence={showConfidence}
               onChange={(updated) => handleQuestionChange(index, updated)}
               onDelete={() => handleDelete(index)}

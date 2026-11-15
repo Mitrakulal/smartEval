@@ -110,15 +110,21 @@ export function QuestionRow({
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '100px 140px 1fr' }, gap: 2, mb: 2 }}>
         <TextField
           label="Q Number"
-          type="number"
           size="small"
           value={question.number}
           disabled={disabled}
-          error={isDuplicateNumber || question.number <= 0}
-          helperText={isDuplicateNumber ? 'Duplicate' : undefined}
-          onChange={(e) => handleFieldChange('number', parseInt(e.target.value, 10) || 1)}
+          error={isDuplicateNumber || question.number.trim() === ''}
+          helperText={
+            isDuplicateNumber
+              ? 'Duplicate'
+              : question.number.trim() === ''
+              ? 'Required'
+              : undefined
+          }
+          placeholder="1a"
+          onChange={(e) => handleFieldChange('number', e.target.value)}
           slotProps={{
-            htmlInput: { min: 1 },
+            htmlInput: { maxLength: 8 },
           }}
         />
 

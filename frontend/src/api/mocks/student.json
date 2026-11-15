@@ -7,7 +7,7 @@
     {
       "answer_id": 11,
       "question_id": 1,
-      "question_number": 1,
+      "question_number": "1",
       "question_text": "Explain Dijkstra's algorithm.",
       "max_marks": 5,
       "status": "evaluated",
@@ -51,7 +51,7 @@
     {
       "answer_id": 12,
       "question_id": 2,
-      "question_number": 2,
+      "question_number": "2",
       "question_text": "Differentiate TCP and UDP.",
       "max_marks": 5,
       "status": "evaluated",
@@ -95,7 +95,7 @@
     {
       "answer_id": 13,
       "question_id": 3,
-      "question_number": 3,
+      "question_number": "3",
       "question_text": "What is subnet masking?",
       "max_marks": 5,
       "status": "evaluated",

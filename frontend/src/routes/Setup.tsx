@@ -44,6 +44,14 @@ interface SliderSettings {
   borderlineBand: number;
 }
 
+/** The contract says strings, but a stale dev cache or an old backend may send numbers. */
+function withStringNumbers<T extends { number: string }>(questions: T[]): T[] {
+  return questions.map((question) => ({
+    ...question,
+    number: String(question.number ?? ''),
+  }));
+}
+
 export function Setup() {
   const navigate = useNavigate();
   const { showSuccess, showError } = useSnackbar();
@@ -86,17 +94,19 @@ export function Setup() {
       return localDraftQuestions;
     }
     if (exam && (exam.state === 'READY' || exam.state === 'FINAL') && exam.questions.length > 0) {
-      return exam.questions.map((q) => ({
-        number: q.number,
-        text: q.text,
-        max_marks: q.max_marks,
-        grading_mode: q.grading_mode,
-        key_points: q.key_points.map((kp) => ({
-          text: kp.text,
-          confidence: 'parsed' as const,
-        })),
-        confidence: { text: 'parsed' as const, max_marks: 'parsed' as const },
-      }));
+      return withStringNumbers(
+        exam.questions.map((q) => ({
+          number: q.number,
+          text: q.text,
+          max_marks: q.max_marks,
+          grading_mode: q.grading_mode,
+          key_points: q.key_points.map((kp) => ({
+            text: kp.text,
+            confidence: 'parsed' as const,
+          })),
+          confidence: { text: 'parsed' as const, max_marks: 'parsed' as const },
+        }))
+      );
     }
     return [];
   }, [localDraftQuestions, exam]);
@@ -111,7 +121,7 @@ export function Setup() {
     try {
       const draft = await parseKeyMutation.mutateAsync(file);
       setDraftId(draft.draft_id);
-      setLocalDraftQuestions(draft.questions);
+      setLocalDraftQuestions(withStringNumbers(draft.questions));
       setParseWarnings(draft.warnings || []);
       showSuccess(`Parsed ${draft.questions.length} questions from ${file.name}`);
     } catch (err: unknown) {
@@ -121,7 +131,7 @@ export function Setup() {
       setIsManualEntryMode(true);
       setLocalDraftQuestions([
         {
-          number: 1,
+          number: '1',
           text: '',
           max_marks: 5,
           grading_mode: 'semantic',
@@ -183,7 +193,7 @@ export function Setup() {
     }
 
     const confirmQuestions: ConfirmQuestion[] = questions.map((q) => ({
-      number: q.number,
+      number: q.number.trim(),
       text: q.text.trim(),
       max_marks: q.max_marks,
       grading_mode: q.grading_mode,

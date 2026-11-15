@@ -72,7 +72,7 @@ Persistent across all three routes:
 ### Validation rules (block confirm)
 
 - At least one question
-- Question numbers unique
+- Question numbers unique and non-empty (text labels allowed — `1a`, `2b`)
 - `max_marks > 0` for every question
 - Every question has ≥ 1 key point
 - Key point text non-empty

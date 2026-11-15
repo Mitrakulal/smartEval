@@ -9,16 +9,23 @@ export function validateQuestions(questions: DraftQuestion[]): string[] {
   }
 
   // Check unique question numbers
-  const seenNumbers = new Set<number>();
-  const duplicates = new Set<number>();
+  const seenNumbers = new Set<string>();
+  const duplicates = new Set<string>();
   for (const q of questions) {
-    if (seenNumbers.has(q.number)) {
-      duplicates.add(q.number);
+    const number = q.number.trim();
+    if (number === '') {
+      continue;
     }
-    seenNumbers.add(q.number);
+    if (seenNumbers.has(number)) {
+      duplicates.add(number);
+    }
+    seenNumbers.add(number);
   }
   if (duplicates.size > 0) {
     errors.push(`Question numbers must be unique. Duplicate numbers: ${Array.from(duplicates).join(', ')}.`);
+  }
+  if (questions.some((q) => q.number.trim() === '')) {
+    errors.push('Every question must have a number, for example 1a or 2b.');
   }
 
   // Check max marks and text
