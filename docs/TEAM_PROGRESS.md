@@ -20,7 +20,7 @@ Status values: `todo` | `doing` | `done` | `blocked`
 | **WP3** | Exam & Key Lifecycle Endpoints | Wave 2 | Dev A (worker_exam) | `backend/app/api/exam.py` | Gate 1 | **done** |
 | **WP4** | Students Management Endpoints | Wave 2 | Dev A (worker_students) | `backend/app/api/students.py` | Gate 1 | **done** |
 | **WP5** | Answers & Jobs Endpoints | Wave 2 | Dev A (worker_answers) | `backend/app/api/answers.py`<br>`backend/app/api/jobs.py` | Gate 1 | **done** |
-| **WP6** | Marksheet & Approve Endpoints | Wave 2 | Dev A (worker_marksheet) | `backend/app/api/marksheet.py` | Gate 1 | **todo** |
+| **WP6** | Marksheet & Approve Endpoints | Wave 2 | Dev A (worker_marksheet) | `backend/app/api/marksheet.py` | Gate 1 | **done** |
 | **WP7** | Demo Seed Script | Wave 3 | Dev A (worker_seed) | `backend/fixtures/demo_seed.py` | WP3, WP4, WP5, WP6 | **todo** |
 | **WP8** | Comprehensive API Test Suite | Wave 3 | Dev A (worker_tests) | `backend/tests/test_api.py` | WP3, WP4, WP5, WP6 | **todo** |
 | **Verif** | System Verification & Manual Checks | Verification | Dev A / QA | CLI, server checks, double seed | WP7, WP8 | **todo** |
@@ -78,10 +78,10 @@ Status values: `todo` | `doing` | `done` | `blocked`
   - [x] `PATCH /api/answers/{answer_id}` (validates marks bounds, requires reason for `overridden`, updates decision).
   - [x] `GET /api/answers/{answer_id}/image` (serves normalized JPEG).
   - [x] `GET /api/jobs/{job_id}` (polls job status, maps errors into contract shape).
-- [ ] **WP6: Marksheet & Approval Router (`backend/app/api/marksheet.py`)**
-  - [ ] `GET /api/exam/marksheet` (marks dictionary keyed by string `question_id`, totals, class average).
-  - [ ] `GET /api/exam/marksheet.csv` (CSV format matching JSON marksheet values exactly).
-  - [ ] `POST /api/exam/approve` (guard blocks with `409 UNREVIEWED_ANSWERS` if any answer has `needs_review == true` and `decision == "pending"`; locks exam state to `FINAL`).
+- [x] **WP6: Marksheet & Approval Router (`backend/app/api/marksheet.py`)**
+  - [x] `GET /api/exam/marksheet` (marks dictionary keyed by string `question_id`, totals, class average).
+  - [x] `GET /api/exam/marksheet.csv` (CSV format matching JSON marksheet values exactly).
+  - [x] `POST /api/exam/approve` (guard blocks with `409 UNREVIEWED_ANSWERS` if any answer has `needs_review == true` and `decision == "pending"`; locks exam state to `FINAL`).
 
 ---
 
@@ -136,13 +136,15 @@ Status values: `todo` | `doing` | `done` | `blocked`
 |:---|:---|:---|:---|:---:|
 | 1 | `StudentSummary.average = round(sum(marks) / answered, 1)` if `answered > 0`, else `null` | `app/api/students.py` | Student list calculation test | verified |
 | 2 | `StudentSummary.flags = number of evaluated answers with at least one flag` | `app/api/students.py` | Distinct flagged answers count | verified |
-| 3 | `needs_review = bool(flags)` persists after review; approve blocks only when `needs_review == true` AND `decision == "pending"` | `app/api/answers.py`<br>`app/api/marksheet.py` | Approve guard test | verified (answers) |
+| 3 | `needs_review = bool(flags)` persists after review; approve blocks only when `needs_review == true` AND `decision == "pending"` | `app/api/answers.py`<br>`app/api/marksheet.py` | Approve guard test | verified (full) |
 | 4 | `POST /api/exam/reset` clears DB rows AND files in `data/keys/` and `data/images/`, keeping directories and `.gitkeep` | `app/api/exam.py` | Reset filesystem cleanup test | verified |
 | 5 | `GET /api/exam/key/file` returns 404 NOT_FOUND with message `"No key file associated with this exam"` when no key file exists | `app/api/exam.py` | Key file 404 test | verified |
 
 ---
 
 ## 4. Updates & Changelog
+
+- **2026-11-15T22:00:00Z**: Completed WP6 Marksheet & Approval Router (`backend/app/api/marksheet.py`, `backend/app/main.py`). Implemented `GET /api/exam/marksheet` (matrix with string-keyed marks, question max_marks sum, student status, review_status, and class_average across evaluated students), `GET /api/exam/marksheet.csv` (CSV export formatted with header `USN,Name,Q<num1>,...,Total,Max,Flags,Review_Status`, blank cell for unevaluated answers, and values matching JSON marksheet exactly), and `POST /api/exam/approve` (guards: 409 `WRONG_STATE` if exam state != `READY`, 409 `UNREVIEWED_ANSWERS` if any answer has flags and `decision == 'pending'`, transitions exam state to `FINAL` when all reviewed). All direct verification checks passed.
 
 - **2026-11-15T21:50:00Z**: Completed WP5 Answers & Jobs Router (`backend/app/api/answers.py`, `backend/app/api/jobs.py`, `backend/app/main.py`). Implemented `POST /api/students/{usn}/answers/{question_id}` (validates MIME/size, saves image, upserts answer row, inserts job row, triggers lazy enqueue, returns HTTP 202 {"job_id": job_id}), `DELETE /api/students/{usn}/answers/{question_id}` (cleans up image and jobs, resets answer row to pending, returns 204), `PATCH /api/answers/{answer_id}` (validates marks and override reason, updates decision/reason/status, enforces Approved Decision 3 needs_review = bool(flags)), `GET /api/answers/{answer_id}/image` (serves image or 404), and `GET /api/jobs/{job_id}` (returns job progress and mapped error contract payload). All 11 verification checks passed.
 
