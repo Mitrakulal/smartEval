@@ -14,7 +14,7 @@ Status values: `todo` | `doing` | `done` | `blocked`
 | ID | Package / Milestone | Wave | Assigned Owner | Target Files | Dependencies | Status |
 |:---|:---|:---:|:---:|:---|:---:|:---:|
 | **WP0** | Preflight Initialization | Step 0 | worker_preflight | `docs/TEAM_PROGRESS.md` | None | **done** |
-| **WP1** | Core Foundation & Infrastructure | Wave 1 | Dev A (worker_core) | `backend/app/core/config.py`<br>`backend/app/core/db.py`<br>`backend/app/core/errors.py`<br>`backend/app/main.py`<br>`backend/requirements.txt` | WP0 | **todo** |
+| **WP1** | Core Foundation & Infrastructure | Wave 1 | Dev A (worker_core) | `backend/app/core/config.py`<br>`backend/app/core/db.py`<br>`backend/app/core/errors.py`<br>`backend/app/main.py`<br>`backend/requirements.txt` | WP0 | **done** |
 | **WP2** | API Request & Response Schemas | Wave 1 | Dev A (worker_schemas) | `backend/app/api/schemas.py` | WP1 | **todo** |
 | **Gate 1** | Wave 1 Gate Check (`uvicorn` start & `GET /api/exam`) | Wave 1 Gate | Coordinator / Dev A | Server runtime verification | WP1, WP2 | **todo** |
 | **WP3** | Exam & Key Lifecycle Endpoints | Wave 2 | Dev A (worker_exam) | `backend/app/api/exam.py` | Gate 1 | **todo** |
@@ -40,12 +40,12 @@ Status values: `todo` | `doing` | `done` | `blocked`
 ---
 
 ### Wave 1: Foundation (Core & Schemas)
-- [ ] **WP1: Core Foundation & Infrastructure**
-  - [ ] Implement `backend/app/core/config.py` (load env vars with fallback defaults).
-  - [ ] Implement `backend/app/core/db.py` (SQLite connection, WAL mode, foreign keys, table DDL, singleton exam, vector helpers).
-  - [ ] Implement `backend/app/core/errors.py` (contract error envelope `{"error": {"code", "message", "detail"}}`).
-  - [ ] Implement `backend/app/main.py` (FastAPI app, CORS, exception handlers, lifespan).
-  - [ ] Update `backend/requirements.txt` with required dependencies.
+- [x] **WP1: Core Foundation & Infrastructure**
+  - [x] Implement `backend/app/core/config.py` (load env vars with fallback defaults).
+  - [x] Implement `backend/app/core/db.py` (SQLite connection, WAL mode, foreign keys, table DDL, singleton exam, vector helpers).
+  - [x] Implement `backend/app/core/errors.py` (contract error envelope `{"error": {"code", "message", "detail"}}`).
+  - [x] Implement `backend/app/main.py` (FastAPI app, CORS, exception handlers, lifespan).
+  - [x] Update `backend/requirements.txt` with required dependencies.
 - [ ] **WP2: API Request & Response Schemas**
   - [ ] Implement `backend/app/api/schemas.py` matching `docs/API_CONTRACT.md` v1.4.
   - [ ] Enforce strict `snake_case` naming across all models.
@@ -144,4 +144,5 @@ Status values: `todo` | `doing` | `done` | `blocked`
 
 ## 4. Updates & Changelog
 
+- **2026-11-15T20:40:00Z**: Completed WP1 Core Foundation & Infrastructure (config, db, errors, main, requirements). All verifications passed.
 - **2026-11-15T20:29:00Z**: Initialized `docs/TEAM_PROGRESS.md` for Step 0 Preflight. Marked WP0 as `done`, all downstream packages initialized to `todo`.

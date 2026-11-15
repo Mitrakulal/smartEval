@@ -1,0 +1,40 @@
+from contextlib import asynccontextmanager
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.core.config import settings
+from app.core.db import init_db
+from app.core.errors import register_error_handlers
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: initialize database tables and seed singleton exam row
+    init_db()
+    yield
+    # Shutdown logic if required
+
+
+app = FastAPI(
+    title="SmartEval API",
+    version="1.4",
+    lifespan=lifespan,
+)
+
+# CORS Middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.CORS_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Register contract error handlers
+register_error_handlers(app)
+
+
+@app.get("/health")
+def health_check():
+    """Basic health check endpoint."""
+    return {"status": "ok"}

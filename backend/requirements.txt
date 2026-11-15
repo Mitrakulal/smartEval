@@ -19,6 +19,7 @@ google-genai
 # Scoring
 sentence-transformers
 pandas
+numpy
 
 # Dev / test
 pytest
