@@ -25,7 +25,7 @@ Status values: `todo` | `doing` | `done` | `blocked`
 | **WP8** | Comprehensive API Test Suite | Wave 3 | Dev A (worker_tests) | `backend/tests/test_api.py` | WP3, WP4, WP5, WP6 | **done** |
 | **Verif** | System Verification & Manual Checks | Verification | Dev A / QA | CLI, server checks, double seed | WP7, WP8 | **done** |
 | **Audit** | API Contract Audit (v1.4) | Audit | Reviewer subagent | All routes & responses | Verif | **done** |
-| **Report**| Step 6 Final Report (max 15 lines) | Final | Coordinator | Chat / report artifact | Audit | **todo** |
+| **Report**| Step 6 Final Report (max 15 lines) | Final | Coordinator | Chat / report artifact | Audit | **done** |
 
 ---
 
@@ -125,8 +125,8 @@ Status values: `todo` | `doing` | `done` | `blocked`
   - [x] Standard error envelope `{"error": {"code", "message", "detail"}}`.
   - [x] Answer upload returns HTTP `202 Accepted` with `{"job_id": "j_..."}`.
   - [x] Full question answers list returned in `GET /api/students/{usn}`.
-- [ ] **Final Report**
-  - [ ] Max 15 lines summary report delivered to coordinator/user.
+- [x] **Final Report**
+  - [x] Max 15 lines summary report delivered to coordinator/user.
 
 ---
 
