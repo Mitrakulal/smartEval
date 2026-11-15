@@ -3,7 +3,7 @@
 **Branch:** `BackendDev-A`  
 **Contract Version:** `docs/API_CONTRACT.md` v1.4 (frozen)  
 **Plan Reference:** `docs/PLAN_DEV_A.md`  
-**Last Updated:** 2026-11-15T20:29:00Z  
+**Last Updated:** 2026-11-15T22:32:00Z  
 
 ---
 
@@ -23,7 +23,7 @@ Status values: `todo` | `doing` | `done` | `blocked`
 | **WP6** | Marksheet & Approve Endpoints | Wave 2 | Dev A (worker_marksheet) | `backend/app/api/marksheet.py` | Gate 1 | **done** |
 | **WP7** | Demo Seed Script | Wave 3 | Dev A (worker_seed) | `backend/fixtures/demo_seed.py` | WP3, WP4, WP5, WP6 | **done** |
 | **WP8** | Comprehensive API Test Suite | Wave 3 | Dev A (worker_tests) | `backend/tests/test_api.py` | WP3, WP4, WP5, WP6 | **done** |
-| **Verif** | System Verification & Manual Checks | Verification | Dev A / QA | CLI, server checks, double seed | WP7, WP8 | **todo** |
+| **Verif** | System Verification & Manual Checks | Verification | Dev A / QA | CLI, server checks, double seed | WP7, WP8 | **done** |
 | **Audit** | API Contract Audit (v1.4) | Audit | Reviewer subagent | All routes & responses | Verif | **todo** |
 | **Report**| Step 6 Final Report (max 15 lines) | Final | Coordinator | Chat / report artifact | Audit | **todo** |
 
@@ -111,13 +111,13 @@ Status values: `todo` | `doing` | `done` | `blocked`
 ## 3. Verification & Quality Assurance
 - [x] **Automated Test Run**
   - [x] `pytest tests/test_api.py -q` passes with 0 failures.
-- [ ] **Idempotence & Seeder Run**
+- [x] **Idempotence & Seeder Run**
   - [x] `python -m fixtures.demo_seed` runs cleanly twice in succession.
-- [ ] **Manual Endpoint Verification**
-  - [ ] `GET /api/exam` returns `READY` post-seeding.
-  - [ ] `GET /api/students` returns 2 students.
-  - [ ] `GET /api/exam/marksheet` returns correct JSON totals and class average.
-  - [ ] `GET /api/exam/marksheet.csv` returns valid CSV matching JSON.
+- [x] **Manual Endpoint Verification**
+  - [x] `GET /api/exam` returns `READY` post-seeding.
+  - [x] `GET /api/students` returns 2 students.
+  - [x] `GET /api/exam/marksheet` returns correct JSON totals and class average.
+  - [x] `GET /api/exam/marksheet.csv` returns valid CSV matching JSON.
 - [ ] **Contract Audit (Reviewer Sub-Agent)**
   - [ ] Strict `snake_case` on all keys.
   - [ ] Explicit `null` for nullable fields (not omitted).
@@ -143,6 +143,17 @@ Status values: `todo` | `doing` | `done` | `blocked`
 ---
 
 ## 4. Updates & Changelog
+
+- **2026-11-15T22:32:00Z**: Completed Verification & Quality Assurance (Verif).
+  - Automated Test Run: Ran `pytest tests/test_api.py -q` passing 100% (12 passed, 0 failures in 1.38s).
+  - Seeder Idempotency Verification: Executed `python -m fixtures.demo_seed` twice consecutively; both runs completed cleanly with exit code 0.
+  - Manual Endpoint & Data Verification against seeded database (`data/smarteval.db`):
+    - `GET /api/exam`: Confirmed state is `READY`, questions count is 3, and question numbers are strings (`"1a"`, `"1b"`, `"2a"`).
+    - `GET /api/students`: Confirmed 2 students returned (Asha Rao: answered=0, status=not_started, average=null; Ravi Kumar: answered=3, status=complete, average=3.5).
+    - `GET /api/students/4SF22CS001`: Confirmed 3 synthesized pending Answer objects returned with null marks and pending status.
+    - `GET /api/students/4SF22CS002`: Confirmed 3 evaluated Answer objects returned with total marks = 10.5.
+    - `GET /api/exam/marksheet`: Confirmed JSON response with string-keyed marks dictionary, total marks, and class average (10.5).
+    - `GET /api/exam/marksheet.csv`: Confirmed CSV export with header `USN,Name,Q1a,Q1b,Q2a,Total,Max,Flags,Review_Status`, blank cells for unevaluated answers, and values matching JSON marksheet exactly.
 
 - **2026-11-15T22:20:00Z**: Completed WP8 Comprehensive API Test Suite (`backend/tests/test_api.py`). Implemented isolated temporary database testing harness and all 10 required test cases per docs/PLAN_DEV_A.md §6: `test_fresh_db_state`, `test_student_duplicate_usn`, `test_state_guards`, `test_upload_invalid_file`, `test_confirm_key_validation`, `test_student_detail_pending_answers`, `test_answer_review_validation`, `test_approve_unreviewed_guard`, `test_marksheet_json_csv_agreement`, `test_contract_null_fields_present`, plus additional edge case verifications (`test_exam_reset_cleanup`, `test_key_file_missing_404`). All 12 tests pass cleanly with 0 warnings and 0 failures via `pytest tests/test_api.py -q` in ~1.5 seconds.
 
