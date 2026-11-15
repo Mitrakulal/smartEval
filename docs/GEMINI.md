@@ -1,6 +1,11 @@
 # Gemini Integration — Decision and Plan
 
-**Status:** Proposed — key parsing adapter pending API access; transcription adapter optional
+> **Superseded for the demo (2026-11-15):** The demo backend now uses Gemini for
+> both answer-key parsing and handwriting transcription. See `docs/BACKEND.md`.
+> This document records the original local-first decision and its rationale; it
+> is not the current demo implementation plan.
+
+**Status:** Historical — superseded by `docs/BACKEND.md`
 **Date:** 2026-11-15
 **Related:** `docs/SPEC.md` §5–6, `docs/API_CONTRACT.md` v1.4, `backend/requirements.txt`
 
