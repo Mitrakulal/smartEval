@@ -2,7 +2,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.answers import router as answers_router
 from app.api.exam import router as exam_router
+from app.api.jobs import router as jobs_router
 from app.api.students import router as students_router
 from app.core.config import settings
 from app.core.db import init_db
@@ -38,6 +40,8 @@ register_error_handlers(app)
 # Mount API routers
 app.include_router(exam_router, prefix="/api")
 app.include_router(students_router, prefix="/api")
+app.include_router(answers_router, prefix="/api")
+app.include_router(jobs_router, prefix="/api")
 
 
 @app.get("/health")
