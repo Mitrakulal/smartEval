@@ -16,8 +16,8 @@ Status values: `todo` | `doing` | `done` | `blocked`
 | **WP0** | Preflight Initialization | Step 0 | worker_preflight | `docs/TEAM_PROGRESS.md` | None | **done** |
 | **WP1** | Core Foundation & Infrastructure | Wave 1 | Dev A (worker_core) | `backend/app/core/config.py`<br>`backend/app/core/db.py`<br>`backend/app/core/errors.py`<br>`backend/app/main.py`<br>`backend/requirements.txt` | WP0 | **done** |
 | **WP2** | API Request & Response Schemas | Wave 1 | Dev A (worker_schemas) | `backend/app/api/schemas.py` | WP1 | **done** |
-| **Gate 1** | Wave 1 Gate Check (`uvicorn` start & `GET /api/exam`) | Wave 1 Gate | Coordinator / Dev A | Server runtime verification | WP1, WP2 | **todo** |
-| **WP3** | Exam & Key Lifecycle Endpoints | Wave 2 | Dev A (worker_exam) | `backend/app/api/exam.py` | Gate 1 | **todo** |
+| **Gate 1** | Wave 1 Gate Check (`uvicorn` start & `GET /api/exam`) | Wave 1 Gate | Coordinator / Dev A | Server runtime verification | WP1, WP2 | **done** |
+| **WP3** | Exam & Key Lifecycle Endpoints | Wave 2 | Dev A (worker_exam) | `backend/app/api/exam.py` | Gate 1 | **done** |
 | **WP4** | Students Management Endpoints | Wave 2 | Dev A (worker_students) | `backend/app/api/students.py` | Gate 1 | **todo** |
 | **WP5** | Answers & Jobs Endpoints | Wave 2 | Dev A (worker_answers) | `backend/app/api/answers.py`<br>`backend/app/api/jobs.py` | Gate 1 | **todo** |
 | **WP6** | Marksheet & Approve Endpoints | Wave 2 | Dev A (worker_marksheet) | `backend/app/api/marksheet.py` | Gate 1 | **todo** |
@@ -51,21 +51,21 @@ Status values: `todo` | `doing` | `done` | `blocked`
   - [x] Enforce strict `snake_case` naming across all models.
   - [x] Enforce explicit `None` defaults for all nullable fields so they serialize as `null`.
   - [x] Enforce string question numbers (`number: str`).
-- [ ] **Wave 1 Gate Check**
-  - [ ] Verify `uvicorn app.main:app` starts up cleanly.
-  - [ ] Verify `GET /api/exam` returns `state: "NO_KEY"` matching the exact contract shape.
+- [x] **Wave 1 Gate Check**
+  - [x] Verify `uvicorn app.main:app` starts up cleanly.
+  - [x] Verify `GET /api/exam` returns `state: "NO_KEY"` matching the exact contract shape.
 
 ---
 
 ### Wave 2: Core Endpoints (Parallel Execution)
-- [ ] **WP3: Exam & Key Management Router (`backend/app/api/exam.py`)**
-  - [ ] `GET /api/exam` (singleton state, question/student counts).
-  - [ ] `POST /api/exam/key/parse` (file upload, draft creation, state `KEY_PARSED`).
-  - [ ] `POST /api/exam/key/confirm` (replace questions/key points, vector storage, state `READY`).
-  - [ ] `PATCH /api/exam/settings` (subject, point_threshold, borderline_band).
-  - [ ] `GET /api/exam/key/file` (stream stored file or return 404 `"No key file associated with this exam"`).
-  - [ ] `POST /api/exam/reset` (clear DB tables and files in `data/keys/` and `data/images/`, preserving dirs & `.gitkeep`).
-  - [ ] Guard: Rejects `parse`/`confirm` when state is `FINAL` with `409 WRONG_STATE`.
+- [x] **WP3: Exam & Key Management Router (`backend/app/api/exam.py`)**
+  - [x] `GET /api/exam` (singleton state, question/student counts).
+  - [x] `POST /api/exam/key/parse` (file upload, draft creation, state `KEY_PARSED`).
+  - [x] `POST /api/exam/key/confirm` (replace questions/key points, vector storage, state `READY`).
+  - [x] `PATCH /api/exam/settings` (subject, point_threshold, borderline_band).
+  - [x] `GET /api/exam/key/file` (stream stored file or return 404 `"No key file associated with this exam"`).
+  - [x] `POST /api/exam/reset` (clear DB tables and files in `data/keys/` and `data/images/`, preserving dirs & `.gitkeep`).
+  - [x] Guard: Rejects `parse`/`confirm` when state is `FINAL` with `409 WRONG_STATE`.
 - [ ] **WP4: Students Management Router (`backend/app/api/students.py`)**
   - [ ] Guard: Rejects requests when state is `NO_KEY` with `409 WRONG_STATE`.
   - [ ] `POST /api/students` (create student; reject duplicate with `409 DUPLICATE_USN` unless `replace=true`).
@@ -137,12 +137,14 @@ Status values: `todo` | `doing` | `done` | `blocked`
 | 1 | `StudentSummary.average = round(sum(marks) / answered, 1)` if `answered > 0`, else `null` | `app/api/students.py` | Student list calculation test | pending |
 | 2 | `StudentSummary.flags = number of evaluated answers with at least one flag` | `app/api/students.py` | Distinct flagged answers count | pending |
 | 3 | `needs_review = bool(flags)` persists after review; approve blocks only when `needs_review == true` AND `decision == "pending"` | `app/api/answers.py`<br>`app/api/marksheet.py` | Approve guard test | pending |
-| 4 | `POST /api/exam/reset` clears DB rows AND files in `data/keys/` and `data/images/`, keeping directories and `.gitkeep` | `app/api/exam.py` | Reset filesystem cleanup test | pending |
-| 5 | `GET /api/exam/key/file` returns 404 NOT_FOUND with message `"No key file associated with this exam"` when no key file exists | `app/api/exam.py` | Key file 404 test | pending |
+| 4 | `POST /api/exam/reset` clears DB rows AND files in `data/keys/` and `data/images/`, keeping directories and `.gitkeep` | `app/api/exam.py` | Reset filesystem cleanup test | verified |
+| 5 | `GET /api/exam/key/file` returns 404 NOT_FOUND with message `"No key file associated with this exam"` when no key file exists | `app/api/exam.py` | Key file 404 test | verified |
 
 ---
 
 ## 4. Updates & Changelog
+
+- **2026-11-15T21:15:00Z**: Completed Wave 1 Gate Check and WP3 Exam & Key Management Router (`backend/app/api/exam.py`, `backend/app/main.py`). All 6 endpoints (`GET /api/exam`, `POST /api/exam/key/parse`, `POST /api/exam/key/confirm`, `PATCH /api/exam/settings`, `GET /api/exam/key/file`, `POST /api/exam/reset`), approved decisions 4 & 5, and state guards verified.
 
 - **2026-11-15T20:50:00Z**: Completed WP2 API Request & Response Schemas (`backend/app/api/schemas.py`). All contract models, enums, nullability defaults, and serialization tests verified.
 - **2026-11-15T20:40:00Z**: Completed WP1 Core Foundation & Infrastructure (config, db, errors, main, requirements). All verifications passed.
