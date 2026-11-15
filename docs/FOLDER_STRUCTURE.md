@@ -36,6 +36,7 @@ smartEval/
 │   ├── API_CONTRACT.md       Frontend ↔ backend agreement (frozen)
 │   ├── FRONTEND.md           Every screen, element, state and owner (F1/F2)
 │   ├── FRONTEND_AGENTS.md    Rules for frontend coding agents
+│   ├── GEMINI.md             Local-first extraction; optional Gemini adapter
 │   ├── FOLDER_STRUCTURE.md   This file
 │   ├── poster.jpg            Project poster
 │   └── samples/              Committed demo inputs (answer keys + generator)
