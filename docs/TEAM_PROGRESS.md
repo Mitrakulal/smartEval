@@ -21,7 +21,7 @@ Status values: `todo` | `doing` | `done` | `blocked`
 | **WP4** | Students Management Endpoints | Wave 2 | Dev A (worker_students) | `backend/app/api/students.py` | Gate 1 | **done** |
 | **WP5** | Answers & Jobs Endpoints | Wave 2 | Dev A (worker_answers) | `backend/app/api/answers.py`<br>`backend/app/api/jobs.py` | Gate 1 | **done** |
 | **WP6** | Marksheet & Approve Endpoints | Wave 2 | Dev A (worker_marksheet) | `backend/app/api/marksheet.py` | Gate 1 | **done** |
-| **WP7** | Demo Seed Script | Wave 3 | Dev A (worker_seed) | `backend/fixtures/demo_seed.py` | WP3, WP4, WP5, WP6 | **todo** |
+| **WP7** | Demo Seed Script | Wave 3 | Dev A (worker_seed) | `backend/fixtures/demo_seed.py` | WP3, WP4, WP5, WP6 | **done** |
 | **WP8** | Comprehensive API Test Suite | Wave 3 | Dev A (worker_tests) | `backend/tests/test_api.py` | WP3, WP4, WP5, WP6 | **todo** |
 | **Verif** | System Verification & Manual Checks | Verification | Dev A / QA | CLI, server checks, double seed | WP7, WP8 | **todo** |
 | **Audit** | API Contract Audit (v1.4) | Audit | Reviewer subagent | All routes & responses | Verif | **todo** |
@@ -86,14 +86,14 @@ Status values: `todo` | `doing` | `done` | `blocked`
 ---
 
 ### Wave 3: Integration, Seeder & Test Suite
-- [ ] **WP7: Demo Seed Script (`backend/fixtures/demo_seed.py`)**
-  - [ ] Executable via `python -m fixtures.demo_seed`.
-  - [ ] Idempotent execution (runs cleanly multiple times without constraint errors).
-  - [ ] Configures exam `Computer Networks` in `READY` state.
-  - [ ] Seeds 3 questions: `1a` (3.0 marks), `1b` (3.0 marks), `2a` (6.0 marks).
-  - [ ] Dynamically queries `key_point` IDs from SQLite.
-  - [ ] Seeds Student 1 (`4SF22CS001`, Asha Rao) - clean slate for live demo.
-  - [ ] Seeds Student 2 (`4SF22CS002`, Ravi Kumar) - pre-evaluated with accepted marks (10.5 total).
+- [x] **WP7: Demo Seed Script (`backend/fixtures/demo_seed.py`)**
+  - [x] Executable via `python -m fixtures.demo_seed`.
+  - [x] Idempotent execution (runs cleanly multiple times without constraint errors).
+  - [x] Configures exam `Computer Networks` in `READY` state.
+  - [x] Seeds 3 questions: `1a` (3.0 marks), `1b` (3.0 marks), `2a` (6.0 marks).
+  - [x] Dynamically queries `key_point` IDs from SQLite.
+  - [x] Seeds Student 1 (`4SF22CS001`, Asha Rao) - clean slate for live demo.
+  - [x] Seeds Student 2 (`4SF22CS002`, Ravi Kumar) - pre-evaluated with accepted marks (10.5 total).
 - [ ] **WP8: Comprehensive API Test Suite (`backend/tests/test_api.py`)**
   - [ ] Fresh DB state test (`test_fresh_db_state`).
   - [ ] Duplicate USN and replace test (`test_student_duplicate_usn`).
@@ -112,7 +112,7 @@ Status values: `todo` | `doing` | `done` | `blocked`
 - [ ] **Automated Test Run**
   - [ ] `pytest tests/test_api.py -q` passes with 0 failures.
 - [ ] **Idempotence & Seeder Run**
-  - [ ] `python -m fixtures.demo_seed` runs cleanly twice in succession.
+  - [x] `python -m fixtures.demo_seed` runs cleanly twice in succession.
 - [ ] **Manual Endpoint Verification**
   - [ ] `GET /api/exam` returns `READY` post-seeding.
   - [ ] `GET /api/students` returns 2 students.
@@ -143,6 +143,8 @@ Status values: `todo` | `doing` | `done` | `blocked`
 ---
 
 ## 4. Updates & Changelog
+
+- **2026-11-15T22:10:00Z**: Completed WP7 Demo Seed Script (`backend/fixtures/demo_seed.py`). Implemented standalone executable module and programmatic `seed_db(db_path)` function with full idempotence (clears tables, resets autoincrements, updates/inserts singleton exam row in READY state for Computer Networks, seeds 3 questions with 384-dimensional key point float embeddings, seeds clean slate Student 1 Asha Rao, dynamically queries key point IDs from SQLite, and seeds pre-evaluated benchmark Student 2 Ravi Kumar with 10.5 total marks and accepted answers). Verified double execution idempotence and direct database/API contract compliance.
 
 - **2026-11-15T22:00:00Z**: Completed WP6 Marksheet & Approval Router (`backend/app/api/marksheet.py`, `backend/app/main.py`). Implemented `GET /api/exam/marksheet` (matrix with string-keyed marks, question max_marks sum, student status, review_status, and class_average across evaluated students), `GET /api/exam/marksheet.csv` (CSV export formatted with header `USN,Name,Q<num1>,...,Total,Max,Flags,Review_Status`, blank cell for unevaluated answers, and values matching JSON marksheet exactly), and `POST /api/exam/approve` (guards: 409 `WRONG_STATE` if exam state != `READY`, 409 `UNREVIEWED_ANSWERS` if any answer has flags and `decision == 'pending'`, transitions exam state to `FINAL` when all reviewed). All direct verification checks passed.
 
