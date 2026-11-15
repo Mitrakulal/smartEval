@@ -15,7 +15,7 @@ Status values: `todo` | `doing` | `done` | `blocked`
 |:---|:---|:---:|:---:|:---|:---:|:---:|
 | **WP0** | Preflight Initialization | Step 0 | worker_preflight | `docs/TEAM_PROGRESS.md` | None | **done** |
 | **WP1** | Core Foundation & Infrastructure | Wave 1 | Dev A (worker_core) | `backend/app/core/config.py`<br>`backend/app/core/db.py`<br>`backend/app/core/errors.py`<br>`backend/app/main.py`<br>`backend/requirements.txt` | WP0 | **done** |
-| **WP2** | API Request & Response Schemas | Wave 1 | Dev A (worker_schemas) | `backend/app/api/schemas.py` | WP1 | **todo** |
+| **WP2** | API Request & Response Schemas | Wave 1 | Dev A (worker_schemas) | `backend/app/api/schemas.py` | WP1 | **done** |
 | **Gate 1** | Wave 1 Gate Check (`uvicorn` start & `GET /api/exam`) | Wave 1 Gate | Coordinator / Dev A | Server runtime verification | WP1, WP2 | **todo** |
 | **WP3** | Exam & Key Lifecycle Endpoints | Wave 2 | Dev A (worker_exam) | `backend/app/api/exam.py` | Gate 1 | **todo** |
 | **WP4** | Students Management Endpoints | Wave 2 | Dev A (worker_students) | `backend/app/api/students.py` | Gate 1 | **todo** |
@@ -46,11 +46,11 @@ Status values: `todo` | `doing` | `done` | `blocked`
   - [x] Implement `backend/app/core/errors.py` (contract error envelope `{"error": {"code", "message", "detail"}}`).
   - [x] Implement `backend/app/main.py` (FastAPI app, CORS, exception handlers, lifespan).
   - [x] Update `backend/requirements.txt` with required dependencies.
-- [ ] **WP2: API Request & Response Schemas**
-  - [ ] Implement `backend/app/api/schemas.py` matching `docs/API_CONTRACT.md` v1.4.
-  - [ ] Enforce strict `snake_case` naming across all models.
-  - [ ] Enforce explicit `None` defaults for all nullable fields so they serialize as `null`.
-  - [ ] Enforce string question numbers (`number: str`).
+- [x] **WP2: API Request & Response Schemas**
+  - [x] Implement `backend/app/api/schemas.py` matching `docs/API_CONTRACT.md` v1.4.
+  - [x] Enforce strict `snake_case` naming across all models.
+  - [x] Enforce explicit `None` defaults for all nullable fields so they serialize as `null`.
+  - [x] Enforce string question numbers (`number: str`).
 - [ ] **Wave 1 Gate Check**
   - [ ] Verify `uvicorn app.main:app` starts up cleanly.
   - [ ] Verify `GET /api/exam` returns `state: "NO_KEY"` matching the exact contract shape.
@@ -144,5 +144,6 @@ Status values: `todo` | `doing` | `done` | `blocked`
 
 ## 4. Updates & Changelog
 
+- **2026-11-15T20:50:00Z**: Completed WP2 API Request & Response Schemas (`backend/app/api/schemas.py`). All contract models, enums, nullability defaults, and serialization tests verified.
 - **2026-11-15T20:40:00Z**: Completed WP1 Core Foundation & Infrastructure (config, db, errors, main, requirements). All verifications passed.
 - **2026-11-15T20:29:00Z**: Initialized `docs/TEAM_PROGRESS.md` for Step 0 Preflight. Marked WP0 as `done`, all downstream packages initialized to `todo`.
