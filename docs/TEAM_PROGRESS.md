@@ -22,7 +22,7 @@ Status values: `todo` | `doing` | `done` | `blocked`
 | **WP5** | Answers & Jobs Endpoints | Wave 2 | Dev A (worker_answers) | `backend/app/api/answers.py`<br>`backend/app/api/jobs.py` | Gate 1 | **done** |
 | **WP6** | Marksheet & Approve Endpoints | Wave 2 | Dev A (worker_marksheet) | `backend/app/api/marksheet.py` | Gate 1 | **done** |
 | **WP7** | Demo Seed Script | Wave 3 | Dev A (worker_seed) | `backend/fixtures/demo_seed.py` | WP3, WP4, WP5, WP6 | **done** |
-| **WP8** | Comprehensive API Test Suite | Wave 3 | Dev A (worker_tests) | `backend/tests/test_api.py` | WP3, WP4, WP5, WP6 | **todo** |
+| **WP8** | Comprehensive API Test Suite | Wave 3 | Dev A (worker_tests) | `backend/tests/test_api.py` | WP3, WP4, WP5, WP6 | **done** |
 | **Verif** | System Verification & Manual Checks | Verification | Dev A / QA | CLI, server checks, double seed | WP7, WP8 | **todo** |
 | **Audit** | API Contract Audit (v1.4) | Audit | Reviewer subagent | All routes & responses | Verif | **todo** |
 | **Report**| Step 6 Final Report (max 15 lines) | Final | Coordinator | Chat / report artifact | Audit | **todo** |
@@ -94,23 +94,23 @@ Status values: `todo` | `doing` | `done` | `blocked`
   - [x] Dynamically queries `key_point` IDs from SQLite.
   - [x] Seeds Student 1 (`4SF22CS001`, Asha Rao) - clean slate for live demo.
   - [x] Seeds Student 2 (`4SF22CS002`, Ravi Kumar) - pre-evaluated with accepted marks (10.5 total).
-- [ ] **WP8: Comprehensive API Test Suite (`backend/tests/test_api.py`)**
-  - [ ] Fresh DB state test (`test_fresh_db_state`).
-  - [ ] Duplicate USN and replace test (`test_student_duplicate_usn`).
-  - [ ] State guard enforcement test (`test_state_guards`).
-  - [ ] Invalid upload type test (`test_upload_invalid_file`).
-  - [ ] Key confirm validation test (`test_confirm_key_validation`).
-  - [ ] Pending answers presence in student detail test (`test_student_detail_pending_answers`).
-  - [ ] Answer review validation test (`test_answer_review_validation`).
-  - [ ] Approval unreviewed guard test (`test_approve_unreviewed_guard`).
-  - [ ] Marksheet JSON vs CSV agreement test (`test_marksheet_json_csv_agreement`).
-  - [ ] Contract nullability check test (`test_contract_null_fields_present`).
+- [x] **WP8: Comprehensive API Test Suite (`backend/tests/test_api.py`)**
+  - [x] Fresh DB state test (`test_fresh_db_state`).
+  - [x] Duplicate USN and replace test (`test_student_duplicate_usn`).
+  - [x] State guard enforcement test (`test_state_guards`).
+  - [x] Invalid upload type test (`test_upload_invalid_file`).
+  - [x] Key confirm validation test (`test_confirm_key_validation`).
+  - [x] Pending answers presence in student detail test (`test_student_detail_pending_answers`).
+  - [x] Answer review validation test (`test_answer_review_validation`).
+  - [x] Approval unreviewed guard test (`test_approve_unreviewed_guard`).
+  - [x] Marksheet JSON vs CSV agreement test (`test_marksheet_json_csv_agreement`).
+  - [x] Contract nullability check test (`test_contract_null_fields_present`).
 
 ---
 
-### Verification & Quality Assurance
-- [ ] **Automated Test Run**
-  - [ ] `pytest tests/test_api.py -q` passes with 0 failures.
+## 3. Verification & Quality Assurance
+- [x] **Automated Test Run**
+  - [x] `pytest tests/test_api.py -q` passes with 0 failures.
 - [ ] **Idempotence & Seeder Run**
   - [x] `python -m fixtures.demo_seed` runs cleanly twice in succession.
 - [ ] **Manual Endpoint Verification**
@@ -143,6 +143,8 @@ Status values: `todo` | `doing` | `done` | `blocked`
 ---
 
 ## 4. Updates & Changelog
+
+- **2026-11-15T22:20:00Z**: Completed WP8 Comprehensive API Test Suite (`backend/tests/test_api.py`). Implemented isolated temporary database testing harness and all 10 required test cases per docs/PLAN_DEV_A.md §6: `test_fresh_db_state`, `test_student_duplicate_usn`, `test_state_guards`, `test_upload_invalid_file`, `test_confirm_key_validation`, `test_student_detail_pending_answers`, `test_answer_review_validation`, `test_approve_unreviewed_guard`, `test_marksheet_json_csv_agreement`, `test_contract_null_fields_present`, plus additional edge case verifications (`test_exam_reset_cleanup`, `test_key_file_missing_404`). All 12 tests pass cleanly with 0 warnings and 0 failures via `pytest tests/test_api.py -q` in ~1.5 seconds.
 
 - **2026-11-15T22:10:00Z**: Completed WP7 Demo Seed Script (`backend/fixtures/demo_seed.py`). Implemented standalone executable module and programmatic `seed_db(db_path)` function with full idempotence (clears tables, resets autoincrements, updates/inserts singleton exam row in READY state for Computer Networks, seeds 3 questions with 384-dimensional key point float embeddings, seeds clean slate Student 1 Asha Rao, dynamically queries key point IDs from SQLite, and seeds pre-evaluated benchmark Student 2 Ravi Kumar with 10.5 total marks and accepted answers). Verified double execution idempotence and direct database/API contract compliance.
 
