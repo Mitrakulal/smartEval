@@ -3,7 +3,7 @@
 **Branch:** `BackendDev-A`  
 **Contract Version:** `docs/API_CONTRACT.md` v1.4 (frozen)  
 **Plan Reference:** `docs/PLAN_DEV_A.md`  
-**Last Updated:** 2026-11-15T22:32:00Z  
+**Last Updated:** 2026-11-15T22:45:00Z  
 
 ---
 
@@ -24,7 +24,7 @@ Status values: `todo` | `doing` | `done` | `blocked`
 | **WP7** | Demo Seed Script | Wave 3 | Dev A (worker_seed) | `backend/fixtures/demo_seed.py` | WP3, WP4, WP5, WP6 | **done** |
 | **WP8** | Comprehensive API Test Suite | Wave 3 | Dev A (worker_tests) | `backend/tests/test_api.py` | WP3, WP4, WP5, WP6 | **done** |
 | **Verif** | System Verification & Manual Checks | Verification | Dev A / QA | CLI, server checks, double seed | WP7, WP8 | **done** |
-| **Audit** | API Contract Audit (v1.4) | Audit | Reviewer subagent | All routes & responses | Verif | **todo** |
+| **Audit** | API Contract Audit (v1.4) | Audit | Reviewer subagent | All routes & responses | Verif | **done** |
 | **Report**| Step 6 Final Report (max 15 lines) | Final | Coordinator | Chat / report artifact | Audit | **todo** |
 
 ---
@@ -118,13 +118,13 @@ Status values: `todo` | `doing` | `done` | `blocked`
   - [x] `GET /api/students` returns 2 students.
   - [x] `GET /api/exam/marksheet` returns correct JSON totals and class average.
   - [x] `GET /api/exam/marksheet.csv` returns valid CSV matching JSON.
-- [ ] **Contract Audit (Reviewer Sub-Agent)**
-  - [ ] Strict `snake_case` on all keys.
-  - [ ] Explicit `null` for nullable fields (not omitted).
-  - [ ] Question numbers are strings.
-  - [ ] Standard error envelope `{"error": {"code", "message", "detail"}}`.
-  - [ ] Answer upload returns HTTP `202 Accepted` with `{"job_id": "j_..."}`.
-  - [ ] Full question answers list returned in `GET /api/students/{usn}`.
+- [x] **Contract Audit (Reviewer Sub-Agent)**
+  - [x] Strict `snake_case` on all keys.
+  - [x] Explicit `null` for nullable fields (not omitted).
+  - [x] Question numbers are strings.
+  - [x] Standard error envelope `{"error": {"code", "message", "detail"}}`.
+  - [x] Answer upload returns HTTP `202 Accepted` with `{"job_id": "j_..."}`.
+  - [x] Full question answers list returned in `GET /api/students/{usn}`.
 - [ ] **Final Report**
   - [ ] Max 15 lines summary report delivered to coordinator/user.
 
@@ -143,6 +143,18 @@ Status values: `todo` | `doing` | `done` | `blocked`
 ---
 
 ## 4. Updates & Changelog
+
+- **2026-11-15T22:45:00Z**: Completed Comprehensive API Contract Audit (Audit).
+  - Verdict: **APPROVE** (all contract v1.4 checks verified with verified code and automated runtime evidence).
+  - Check 1 (Naming): Strict `snake_case` verified across all 24 schema models, query parameters (`replace`), path parameters, and response JSON keys.
+  - Check 2 (Nullability): Explicit `null` serialization verified for all nullable fields (`key_filename`, `transcript`, `ocr_confidence`, `coverage`, `suggested_marks`, `final_marks`, `average`, `decision`, `review_reason`, `evaluated_at`, `error`); zero fields omitted.
+  - Check 3 (Question Labels): String question numbers (`"1a"`, `"2b"`, etc.) verified end-to-end with no integer casting.
+  - Check 4 (Error Envelope): Standard error envelope `{"error": {"code": "...", "message": "...", "detail": ...}}` verified across all exception types (400, 404, 409, 422, 500).
+  - Check 5 (Upload Response): `POST /api/students/{usn}/answers/{question_id}` verified returning HTTP 202 Accepted with exact body `{"job_id": "j_..."}`.
+  - Check 6 (Student Detail Answers): `GET /api/students/{usn}` verified returning synthesized `Answer` objects in question sequence with `status="pending"`, `answer_id=null`, `decision=null`, `needs_review=false`.
+  - Check 7 (5 Approved Decisions): All 5 decisions verified: Decision 1 (average calculation), Decision 2 (flags count), Decision 3 (needs_review persistence & unreviewed approve block), Decision 4 (reset DB and file cleanup preserving .gitkeep), Decision 5 (key file 404 exact message).
+  - Check 8 (Marksheet Agreement): `GET /api/exam/marksheet` string-keyed marks dictionary and `GET /api/exam/marksheet.csv` header/values agreement verified.
+  - Anti-Cheating & Integrity: Zero hardcoded test shortcuts, dummy endpoints, or integrity violations found. Full compliance with docs/API_CONTRACT.md v1.4.
 
 - **2026-11-15T22:32:00Z**: Completed Verification & Quality Assurance (Verif).
   - Automated Test Run: Ran `pytest tests/test_api.py -q` passing 100% (12 passed, 0 failures in 1.38s).
