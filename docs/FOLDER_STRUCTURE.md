@@ -73,10 +73,13 @@ Scaffolded with **Vite 8 + React 19 + TypeScript 5.9**. Install with `npm instal
 | `src/App.tsx` | Router + providers + layout shell — keep it thin |
 | `src/routes/` | One file per screen: `Setup.tsx`, `Evaluate.tsx`, `Marksheet.tsx` |
 | `src/components/common/` | Shared states and dialogs: `LoadingState`, `ErrorState`, `EmptyState`, `StateBanner`, `ConfirmDialog` |
+| `src/components/evaluate/` | Evaluate-only UI: student list/lookup, question navigation, photo capture, job progress, transcript, match list, and result review |
 | `src/components/setup/` | Setup-only components |
 | `src/components/marksheet/` | Marksheet-only components: `MarksheetTable`, `ApproveBar` |
 | `src/components/` (root) | Components shared across screens: `FlagBadge`, `MarkInput` |
 | `src/api/` | Hand-written contract types (`types.ts`) + the axios client with the mock switch |
+| `src/api/evaluateClient.ts` | F2 student, answer upload/review, and job API operations; uses the shared API client and mock-mode switch |
+| `src/hooks/useEvaluate.ts` | TanStack Query hooks for Evaluate student, answer, and job data |
 | `src/api/mocks/` | **Committed.** Fake responses matching `docs/API_CONTRACT.md`, enabled in dev via `.env.development` |
 | `src/theme/` | MUI theme tokens only — palette, spacing, radius, type scale |
 | `vite.config.ts` | Dev server config; `/api` proxies to `http://localhost:8000` |
