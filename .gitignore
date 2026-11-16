@@ -34,3 +34,5 @@ data/images/*
 Thumbs.db
 .vscode/
 .idea/
+data/*.db-shm
+data/*.db-wal
