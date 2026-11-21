@@ -6,11 +6,20 @@ import type {
   SettingsRequest,
   Marksheet,
   ApiErrorBody,
+  StudentSummary,
+  StudentDetail,
+  Answer,
+  ReviewRequest,
+  Job,
+  UploadResponse,
 } from './types.ts';
 
 import rawExamMock from './mocks/exam.json';
 import rawKeyDraftMock from './mocks/key_draft.json';
 import rawMarksheetMock from './mocks/marksheet.json';
+import rawStudentsMock from './mocks/students.json';
+import rawStudentMock from './mocks/student.json';
+import rawJobDoneMock from './mocks/job_done.json';
 
 export const isMockMode = import.meta.env.VITE_MOCK === '1';
 
@@ -70,6 +79,10 @@ export function extractApiError(err: unknown): ApiError {
 let mockExamState: ExamState = JSON.parse(JSON.stringify(rawExamMock)) as ExamState;
 let mockKeyDraft: KeyDraft = JSON.parse(JSON.stringify(rawKeyDraftMock)) as KeyDraft;
 let mockMarksheet: Marksheet = JSON.parse(JSON.stringify(rawMarksheetMock)) as Marksheet;
+let mockStudents: StudentSummary[] = JSON.parse(JSON.stringify(rawStudentsMock)) as StudentSummary[];
+let mockStudentDetails: Record<string, StudentDetail> = {
+  '4SF22CS001': JSON.parse(JSON.stringify(rawStudentMock)) as StudentDetail,
+};
 let mockFileBlob: Blob | null = new Blob(['Dummy PDF key content'], { type: 'application/pdf' });
 
 function delay(ms = 250): Promise<void> {
@@ -225,4 +238,188 @@ export async function approveExam(): Promise<ExamState> {
 
   const res = await apiClient.post<ExamState>('/exam/approve');
   return res.data;
+}
+
+/* =========================================================================
+   Students & Evaluation APIs (F2)
+   ========================================================================= */
+
+export async function fetchStudents(): Promise<StudentSummary[]> {
+  if (isMockMode) {
+    await delay();
+    return JSON.parse(JSON.stringify(mockStudents)) as StudentSummary[];
+  }
+  const res = await apiClient.get<StudentSummary[]>('/students');
+  return res.data;
+}
+
+export async function createStudent(req: { usn: string; name: string }): Promise<StudentSummary> {
+  if (isMockMode) {
+    await delay(300);
+    const existing = mockStudents.find((s) => s.usn.toUpperCase() === req.usn.toUpperCase());
+    if (existing) {
+      throw new ApiError(`Student with USN ${req.usn} already exists`, 'DUPLICATE_USN', null, 409);
+    }
+    const newStudent: StudentSummary = {
+      usn: req.usn.toUpperCase().trim(),
+      name: req.name.trim() || 'New Student',
+      answered: 0,
+      total: mockExamState.questions.length || 3,
+      average: null,
+      flags: 0,
+      status: 'not_started',
+    };
+    mockStudents.push(newStudent);
+    return JSON.parse(JSON.stringify(newStudent)) as StudentSummary;
+  }
+  const res = await apiClient.post<StudentSummary>('/students', req);
+  return res.data;
+}
+
+export async function fetchStudentDetail(usn: string): Promise<StudentDetail> {
+  if (isMockMode) {
+    await delay();
+    if (mockStudentDetails[usn]) {
+      return JSON.parse(JSON.stringify(mockStudentDetails[usn])) as StudentDetail;
+    }
+    // Generate empty answer structure for newly created students based on current exam questions
+    const summary = mockStudents.find((s) => s.usn === usn);
+    const qList = mockExamState.questions.length > 0 ? mockExamState.questions : [
+      { question_id: 1, number: '1', text: "Explain Dijkstra's algorithm.", max_marks: 5 },
+      { question_id: 2, number: '2', text: 'Differentiate TCP and UDP.', max_marks: 5 },
+      { question_id: 3, number: '3', text: 'What is subnet masking?', max_marks: 5 },
+    ];
+    let totalMaxMarks = 0;
+    for (const q of qList) {
+      totalMaxMarks += q.max_marks;
+    }
+    const generated: StudentDetail = {
+      usn,
+      name: summary?.name || 'Student',
+      total_marks: 0,
+      max_marks: totalMaxMarks,
+      answers: qList.map((q) => ({
+        answer_id: null,
+        question_id: q.question_id,
+        question_number: q.number,
+        question_text: q.text,
+        max_marks: q.max_marks,
+        status: 'pending' as const,
+        image_url: null,
+        transcript: null,
+        ocr_confidence: null,
+        key_points: [],
+        coverage: null,
+        covered_count: 0,
+        key_point_count: 0,
+        suggested_marks: null,
+        final_marks: null,
+        decision: null,
+        flags: [],
+        needs_review: false,
+        review_reason: null,
+        evaluated_at: null,
+      })),
+    };
+    mockStudentDetails[usn] = generated;
+    return JSON.parse(JSON.stringify(generated)) as StudentDetail;
+  }
+  const res = await apiClient.get<StudentDetail>(`/students/${encodeURIComponent(usn)}`);
+  return res.data;
+}
+
+export async function uploadAnswerPhoto(
+  usn: string,
+  qid: number,
+  file: File
+): Promise<UploadResponse> {
+  if (isMockMode) {
+    await delay(500);
+    const jobId = `job_${Date.now()}`;
+    // Simulate background evaluation completing
+    setTimeout(() => {
+      const student = mockStudentDetails[usn];
+      if (student) {
+        const ans = student.answers.find((a) => a.question_id === qid);
+        if (ans) {
+          ans.answer_id = Date.now();
+          ans.status = 'evaluated';
+          ans.image_url = URL.createObjectURL(file);
+          ans.transcript = 'Student handwritten response extracted by TrOCR engine for evaluation.';
+          ans.ocr_confidence = 0.88;
+          ans.key_points = [
+            { id: 1, text: 'Expected answer concept key point 1', covered: true, similarity: 0.82, borderline: false },
+            { id: 2, text: 'Expected answer concept key point 2', covered: true, similarity: 0.74, borderline: false },
+          ];
+          ans.coverage = 0.8;
+          ans.covered_count = 2;
+          ans.key_point_count = 2;
+          ans.suggested_marks = ans.max_marks * 0.8;
+          ans.final_marks = ans.suggested_marks;
+          ans.decision = 'pending';
+          ans.needs_review = false;
+          ans.evaluated_at = new Date().toISOString();
+        }
+      }
+    }, 1500);
+    return { job_id: jobId };
+  }
+
+  const formData = new FormData();
+  formData.append('image', file);
+  const res = await apiClient.post<UploadResponse>(
+    `/students/${encodeURIComponent(usn)}/answers/${qid}`,
+    formData,
+    { headers: { 'Content-Type': 'multipart/form-data' } }
+  );
+  return res.data;
+}
+
+export async function fetchJob(jobId: string): Promise<Job> {
+  if (isMockMode) {
+    await delay(200);
+    return JSON.parse(JSON.stringify(rawJobDoneMock)) as Job;
+  }
+  const res = await apiClient.get<Job>(`/jobs/${jobId}`);
+  return res.data;
+}
+
+export async function reviewAnswer(answerId: number, req: ReviewRequest): Promise<Answer> {
+  if (isMockMode) {
+    await delay(300);
+    for (const student of Object.values(mockStudentDetails)) {
+      const ans = student.answers.find((a) => a.answer_id === answerId);
+      if (ans) {
+        ans.final_marks = req.final_marks;
+        ans.decision = req.decision;
+        ans.needs_review = false;
+        student.total_marks = student.answers.reduce((acc, a) => acc + (a.final_marks || 0), 0);
+        return JSON.parse(JSON.stringify(ans)) as Answer;
+      }
+    }
+  }
+  const res = await apiClient.patch<Answer>(`/answers/${answerId}`, req);
+  return res.data;
+}
+
+export async function deleteAnswer(usn: string, qid: number): Promise<void> {
+  if (isMockMode) {
+    await delay(200);
+    const student = mockStudentDetails[usn];
+    if (student) {
+      const ans = student.answers.find((a) => a.question_id === qid);
+      if (ans) {
+        ans.status = 'pending';
+        ans.image_url = null;
+        ans.transcript = null;
+        ans.ocr_confidence = null;
+        ans.key_points = [];
+        ans.suggested_marks = null;
+        ans.final_marks = null;
+        ans.decision = null;
+      }
+    }
+    return;
+  }
+  await apiClient.delete(`/students/${encodeURIComponent(usn)}/answers/${qid}`);
 }
