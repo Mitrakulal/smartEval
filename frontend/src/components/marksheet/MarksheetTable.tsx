@@ -8,6 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 import type { Marksheet, MarksheetRow } from '../../api/types.ts';
 
 interface MarksheetTableProps {
@@ -27,24 +28,24 @@ export function MarksheetTable({ sheet, rows, onRowClick }: MarksheetTableProps)
     sheet.class_average === null ? '—' : formatMark(sheet.class_average);
 
   return (
-    <TableContainer component={Paper} variant="outlined">
-      <Table size="small" aria-label="Marksheet">
-        <TableHead>
+    <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
+      <Table size="medium" aria-label="Marksheet">
+        <TableHead sx={{ bgcolor: 'action.hover' }}>
           <TableRow>
-            <TableCell>USN</TableCell>
-            <TableCell>Name</TableCell>
+            <TableCell sx={{ fontWeight: 600 }}>USN</TableCell>
+            <TableCell sx={{ fontWeight: 600 }}>Name</TableCell>
             {sheet.questions.map((question) => (
-              <TableCell key={question.question_id} align="center">
+              <TableCell key={question.question_id} align="center" sx={{ fontWeight: 600 }}>
                 Q{question.number}
                 <br />
                 <Typography component="span" variant="caption" color="text.secondary">
-                  ({question.max_marks})
+                  ({question.max_marks}m)
                 </Typography>
               </TableCell>
             ))}
-            <TableCell align="right">Total</TableCell>
-            <TableCell align="center">Flags</TableCell>
-            <TableCell align="center">Review</TableCell>
+            <TableCell align="right" sx={{ fontWeight: 600 }}>Total</TableCell>
+            <TableCell align="center" sx={{ fontWeight: 600 }}>Flags</TableCell>
+            <TableCell align="center" sx={{ fontWeight: 600 }}>Review</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -73,7 +74,7 @@ export function MarksheetTable({ sheet, rows, onRowClick }: MarksheetTableProps)
                 },
               }}
             >
-              <TableCell component="th" scope="row">
+              <TableCell component="th" scope="row" sx={{ fontWeight: 600, color: 'text.primary' }}>
                 {row.usn}
               </TableCell>
               <TableCell>{row.name || '—'}</TableCell>
@@ -86,11 +87,23 @@ export function MarksheetTable({ sheet, rows, onRowClick }: MarksheetTableProps)
                 );
               })}
               <TableCell align="right">
-                <strong>{formatMark(row.total)}</strong>
+                <Box
+                  component="span"
+                  sx={{
+                    fontWeight: 700,
+                    px: 1,
+                    py: 0.25,
+                    borderRadius: 1,
+                    bgcolor: 'primary.50',
+                    color: 'primary.main',
+                  }}
+                >
+                  {formatMark(row.total)}
+                </Box>
               </TableCell>
               <TableCell align="center">
                 {row.flags > 0 ? (
-                  <Chip size="small" color="warning" label={row.flags} />
+                  <Chip size="small" color="warning" label={row.flags} sx={{ fontWeight: 600 }} />
                 ) : (
                   '—'
                 )}
@@ -101,18 +114,19 @@ export function MarksheetTable({ sheet, rows, onRowClick }: MarksheetTableProps)
                   variant={row.review_status === 'reviewed' ? 'filled' : 'outlined'}
                   color={row.review_status === 'reviewed' ? 'success' : 'default'}
                   label={row.review_status}
+                  sx={{ textTransform: 'capitalize', fontWeight: 500 }}
                 />
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
-        <TableFooter>
+        <TableFooter sx={{ bgcolor: 'action.hover' }}>
           <TableRow>
-            <TableCell colSpan={2 + sheet.questions.length} align="right">
+            <TableCell colSpan={2 + sheet.questions.length} align="right" sx={{ fontWeight: 600 }}>
               Class average
             </TableCell>
-            <TableCell align="right">{classAverage}</TableCell>
-            <TableCell align="center">{flaggedRows} flagged</TableCell>
+            <TableCell align="right" sx={{ fontWeight: 700 }}>{classAverage}</TableCell>
+            <TableCell align="center" sx={{ fontWeight: 600 }}>{flaggedRows} flagged</TableCell>
             <TableCell />
           </TableRow>
         </TableFooter>
