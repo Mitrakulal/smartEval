@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import LinearProgress from '@mui/material/LinearProgress';
 import Alert from '@mui/material/Alert';
+import Chip from '@mui/material/Chip';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 interface FileDropzoneProps {
@@ -72,21 +73,34 @@ export function FileDropzone({ onFileSelect, isLoading = false, disabled = false
         }}
       >
         <input {...getInputProps()} />
-        <CloudUploadIcon
+        <Box
           sx={{
-            fontSize: 48,
-            color: disabled ? 'action.disabled' : isDragActive ? 'primary.main' : 'text.secondary',
-            mb: 1,
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 64,
+            height: 64,
+            borderRadius: '50%',
+            bgcolor: isDragActive ? 'primary.light' : 'primary.50',
+            color: 'primary.main',
+            mb: 2,
           }}
-        />
-        <Typography variant="h6" color={disabled ? 'text.disabled' : 'text.primary'} gutterBottom>
+        >
+          <CloudUploadIcon sx={{ fontSize: 36 }} />
+        </Box>
+        <Typography variant="h6" color={disabled ? 'text.disabled' : 'text.primary'} gutterBottom sx={{ fontWeight: 600 }}>
           {isDragActive
             ? 'Drop the answer key file here...'
-            : 'Drag & drop answer key, or click to browse'}
+            : 'Upload official answer key'}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Supports .pdf or .docx up to 10 MB. Must be a born-digital document.
+        <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 440, mx: 'auto', mb: 2 }}>
+          Drag and drop your born-digital question paper or model answer document, or click to browse.
         </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
+          <Chip label=".PDF" size="small" variant="outlined" sx={{ fontWeight: 600, fontSize: '0.75rem' }} />
+          <Chip label=".DOCX" size="small" variant="outlined" sx={{ fontWeight: 600, fontSize: '0.75rem' }} />
+          <Chip label="Up to 10 MB" size="small" variant="outlined" sx={{ fontWeight: 500, fontSize: '0.75rem' }} />
+        </Box>
       </Box>
 
       {isLoading && (

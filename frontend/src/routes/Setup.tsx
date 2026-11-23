@@ -8,7 +8,11 @@ import Button from '@mui/material/Button';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
+
+import rawKeyDraftMock from '../api/mocks/key_draft.json';
 
 import {
   useExam,
@@ -140,6 +144,46 @@ export function Setup() {
         },
       ]);
     }
+  };
+
+  const handleLoadSampleDraft = () => {
+    setDraftId(rawKeyDraftMock.draft_id);
+    setDraftFilename(rawKeyDraftMock.filename);
+    setLocalDraftQuestions(
+      rawKeyDraftMock.questions.map((q) => ({
+        number: String(q.number ?? ''),
+        text: q.text,
+        max_marks: q.max_marks,
+        grading_mode: q.grading_mode as 'semantic' | 'manual',
+        key_points: q.key_points.map((kp) => ({
+          text: kp.text,
+          confidence: (kp.confidence ?? 'parsed') as 'parsed' | 'guessed' | 'missing',
+        })),
+        confidence: {
+          text: (q.confidence?.text ?? 'parsed') as 'parsed' | 'guessed' | 'missing',
+          max_marks: (q.confidence?.max_marks ?? 'parsed') as 'parsed' | 'guessed' | 'missing',
+        },
+      }))
+    );
+    setParseWarnings(rawKeyDraftMock.warnings || []);
+    setIsManualEntryMode(false);
+    showSuccess('Sample Computer Networks answer key loaded!');
+  };
+
+  const handleStartManualEntry = () => {
+    setDraftId('manual_draft');
+    setDraftFilename('manual_entry.docx');
+    setLocalDraftQuestions([
+      {
+        number: '1',
+        text: '',
+        max_marks: 5,
+        grading_mode: 'semantic',
+        key_points: [{ text: '', confidence: 'parsed' }],
+        confidence: { text: 'parsed', max_marks: 'parsed' },
+      },
+    ]);
+    setIsManualEntryMode(true);
   };
 
   // Slider drags only update the display; the PATCH waits for onChangeCommitted.
@@ -324,6 +368,27 @@ export function Setup() {
             isLoading={parseKeyMutation.isPending}
             disabled={isFinal}
           />
+          {isNoKey && !isReplacingKey && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 2, mt: -1, mb: 3 }}>
+              <Button
+                variant="outlined"
+                color="primary"
+                startIcon={<AutoStoriesIcon />}
+                onClick={handleLoadSampleDraft}
+                sx={{ borderRadius: 2 }}
+              >
+                Load Sample Answer Key (Demo)
+              </Button>
+              <Button
+                variant="text"
+                color="secondary"
+                startIcon={<AddIcon />}
+                onClick={handleStartManualEntry}
+              >
+                Enter Questions Manually
+              </Button>
+            </Box>
+          )}
           {isReplacingKey && (
             <Box sx={{ mt: -1.5, mb: 3, textAlign: 'right' }}>
               <Button size="small" onClick={() => setIsReplacingKey(false)}>

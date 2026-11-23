@@ -12,12 +12,13 @@ interface NavStepperProps {
 interface StepItem {
   label: string;
   route: string;
+  description: string;
 }
 
 const STEPS: StepItem[] = [
-  { label: 'Setup', route: '/setup' },
-  { label: 'Evaluate', route: '/evaluate' },
-  { label: 'Marksheet', route: '/marksheet' },
+  { label: 'Setup', route: '/setup', description: 'Upload & confirm key' },
+  { label: 'Evaluate', route: '/evaluate', description: 'Score student answers' },
+  { label: 'Marksheet', route: '/marksheet', description: 'Review & export CSV' },
 ];
 
 export function NavStepper({ examState = 'NO_KEY' }: NavStepperProps) {
@@ -36,13 +37,16 @@ export function NavStepper({ examState = 'NO_KEY' }: NavStepperProps) {
     return examState === 'NO_KEY' || examState === 'KEY_PARSED';
   };
 
+  const activeStep = getActiveStep();
+
   return (
-    <Box sx={{ width: '100%', maxWidth: 640, mx: 'auto', my: 2 }}>
-      <Stepper nonLinear activeStep={getActiveStep()}>
+    <Box sx={{ width: '100%', maxWidth: 720, mx: 'auto', my: 1 }}>
+      <Stepper nonLinear activeStep={activeStep}>
         {STEPS.map((step, index) => {
           const disabled = isStepDisabled(index);
+          const isCurrent = activeStep === index;
           return (
-            <Step key={step.label} completed={index < getActiveStep()}>
+            <Step key={step.label} completed={index < activeStep}>
               <StepButton
                 disabled={disabled}
                 onClick={() => {
@@ -50,8 +54,15 @@ export function NavStepper({ examState = 'NO_KEY' }: NavStepperProps) {
                     navigate(step.route);
                   }
                 }}
+                optional={
+                  <Box component="span" sx={{ fontSize: '0.75rem', color: isCurrent ? 'primary.main' : 'text.secondary' }}>
+                    {step.description}
+                  </Box>
+                }
               >
-                {step.label}
+                <Box component="span" sx={{ fontWeight: isCurrent ? 700 : 500 }}>
+                  {step.label}
+                </Box>
               </StepButton>
             </Step>
           );

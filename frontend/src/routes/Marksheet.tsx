@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
+import Grid from '@mui/material/Grid';
 import DownloadIcon from '@mui/icons-material/Download';
 import { useNavigate } from 'react-router-dom';
 import { useExam } from '../hooks/useExam.ts';
@@ -145,6 +146,48 @@ export function Marksheet() {
         />
       ) : (
         <>
+          <Grid container spacing={2} sx={{ mb: 3 }}>
+            <Grid size={{ xs: 12, sm: 4 }}>
+              <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
+                <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, textTransform: 'uppercase' }}>
+                  Total Evaluated
+                </Typography>
+                <Typography variant="h5" sx={{ fontWeight: 700, mt: 0.5, color: 'text.primary' }}>
+                  {counts.all}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {counts.incomplete > 0 ? `${counts.incomplete} incomplete` : 'All students submitted'}
+                </Typography>
+              </Paper>
+            </Grid>
+            <Grid size={{ xs: 12, sm: 4 }}>
+              <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
+                <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, textTransform: 'uppercase' }}>
+                  Class Average
+                </Typography>
+                <Typography variant="h5" sx={{ fontWeight: 700, mt: 0.5, color: 'primary.main' }}>
+                  {average} <Box component="span" sx={{ fontSize: '0.875rem', fontWeight: 500, color: 'text.secondary' }}>/ {sheet.max_marks}</Box>
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Across all graded questions
+                </Typography>
+              </Paper>
+            </Grid>
+            <Grid size={{ xs: 12, sm: 4 }}>
+              <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
+                <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, textTransform: 'uppercase' }}>
+                  Flagged Answers
+                </Typography>
+                <Typography variant="h5" sx={{ fontWeight: 700, mt: 0.5, color: counts.review > 0 ? 'warning.main' : 'success.main' }}>
+                  {counts.review}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {counts.review > 0 ? 'Borderline or low confidence' : 'Zero flags pending review'}
+                </Typography>
+              </Paper>
+            </Grid>
+          </Grid>
+
           <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 2 }}>
             {FILTERS.map((option) => (
               <Chip
