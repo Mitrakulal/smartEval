@@ -1,237 +1,167 @@
 # SmartEval
 
-**AI-Assisted Evaluation of Handwritten Answer Scripts using Handwriting Recognition and Semantic Similarity**
-
-![Status](https://img.shields.io/badge/status-proposal-blue)
-![Python](https://img.shields.io/badge/python-3.10%2B-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
+**AI-assisted evaluation of handwritten answer scripts using Gemini handwriting
+transcription and local semantic similarity.**
 
 > Sahyadri College of Engineering & Management, Mangaluru
 > Department of Computer Science & Engineering (AI & ML)
-> Mini-Project Poster Presentation · 16 October 2026 · Application-Oriented Product
+> Mini-Project Poster Presentation
 
 ---
 
 ## Overview
 
 SmartEval is a lecturer-in-the-loop web application that reads photographed
-handwritten answer scripts, compares each answer against an uploaded answer key
-using **semantic similarity**, and proposes marks. Anything the system is unsure
-about is flagged for human review instead of being auto-graded.
+handwritten answers, compares each transcript against a confirmed answer key,
+and proposes marks. The lecturer remains the final authority and can accept or
+override every suggestion.
 
-The lecturer stays the final authority: the tool drafts, the lecturer decides.
+The current demo path is intentionally small:
 
----
-
-## Problem Statement
-
-- Faculty manually evaluate hundreds of CIE/SEE answer books every exam cycle —
-  slow, repetitive, high-effort work.
-- Long evaluation hours cause fatigue, leading to **inconsistent scoring** across
-  scripts and across evaluators.
-- Manual evaluation creates **long delays** in result processing, affecting
-  students and academic timelines.
-- Existing digital evaluation tools **cannot read free-hand handwriting** and
-  offer **no lecturer-controlled assistance**.
-
-**Need:** an AI-assisted system that digitizes handwritten answer books from
-simple photographs, compares answers with the official answer key, suggests
-scores, and flags only ambiguous cases for human review.
+- one subject and one CIE
+- two students (`4SF22CS001`, `4SF22CS002`)
+- three questions: `1a` (3 marks), `1b` (3 marks), `2a` (6 marks) = 12 marks
+- one photo per question
 
 ---
 
-## Objectives
+## How it works
 
-1. Build a handwriting recognition pipeline using pre-trained **TrOCR**
-   (transformer OCR) to digitize handwritten answers from answer-book photographs.
-2. Compute **semantic similarity** between extracted student answers and model
-   answers using sentence embeddings, and map similarity scores to provisional marks.
-3. Implement **lecturer-configurable tolerance levels** (subject-wise) plus a
-   **human-in-the-loop** review interface that flags low-confidence OCR outputs
-   and borderline answers for manual verification.
-4. Generate a consolidated digital **marksheet (CSV)** from the evaluated scripts.
-5. Validate the system on **OCR accuracy** and on **agreement of suggested scores
-   with faculty-given marks**.
+```text
+DOCX/PDF answer key
+  -> local paragraph/table extraction
+  -> lecturer confirms questions + rubric points
+  -> key points embedded with local MiniLM
+  -> exam state READY
 
----
-
-## Proposed Methodology
-
-```
-Answer Key / Schema            Photograph Answer Book        OpenCV Preprocessing
-(subject, questions,   --->    (using smartphone      --->   (region / line
- model answers)                 camera)                        cropping)
-                                                                     |
-                                                                     v
-                                                              TrOCR Handwriting
-                                                              Recognition
-                                                              (transformer-based OCR)
-                                                                     |
-                                                                     v
-                                                              Sentence Embeddings
-                                                              (student vs model answer)
-                                                                     |
-                                                                     v
-                                                              Similarity
-                                                              (cosine similarity)
-                                                                     |
-                                                                     v
-                                                              Provisional Score
-                                                              (tolerance-based)
-                                                                     |
-                                                                     v
-                                                    +--------------------------------+
-                                                    |  Low confidence / borderline?  |
-                                                    +--------------------------------+
-                                                       |                        |
-                                                    YES |                        | NO
-                                                       v                        v
-                                              +------------------+     +---------------------+
-                                              |  Flag for Human  |     | Accept Provisional  |
-                                              |     Review       |     |       Score         |
-                                              +------------------+     +---------------------+
-                                                       |                        |
-                                                       +-----------+------------+
-                                                                   v
-                                                      CSV Marksheet Export
-                                          (lecturer reviews flagged cases & approves
-                                                   the final marksheet)
+Answer photo
+  -> Pillow EXIF rotation, resize, JPEG normalization
+  -> Gemini vision transcribes handwriting (cached by image hash)
+  -> MiniLM compares answer sentences with key points
+  -> suggested marks + coverage + review flags
+  -> lecturer accepts or overrides
+  -> marksheet JSON / CSV
 ```
 
-### Notes on the design
-
-- **Paraphrases are handled** because similarity is *semantic*, not exact word
-  matching — a correctly reworded answer still scores well.
-- **Diagrams and equations are always flagged for human review** and are never
-  auto-graded.
+Gemini only performs perception (key structuring when needed, handwriting
+transcription). It never assigns marks. Scoring is local and explainable.
 
 ---
 
-## System Design (3-Tier Architecture)
+## Tech stack
 
-### 1. Presentation Layer — Streamlit Web App
-
-- Answer-key upload
-- Photo upload
-- Tolerance sliders (subject-wise)
-- Review dashboard
-- Marksheet export
-
-*Flow:* lecturer uploads the key once, reviews flagged answers, approves the
-final marks.
-
-### 2. Processing Layer — AI Pipeline
-
-| Stage | Component |
+| Area | Choice |
 | --- | --- |
-| 1 | **OpenCV** — preprocessing (deskew, binarize, line/region cropping) |
-| 2 | **TrOCR** — handwriting recognition (Hugging Face) |
-| 3 | **Sentence-Transformers** — embeddings for student and model answers |
-| 4 | **Cosine Similarity** — semantic comparison |
-| 5 | **Tolerance-based Scoring** — similarity → provisional marks |
+| Frontend | React, Vite, TypeScript, MUI, TanStack Query |
+| Backend | FastAPI, SQLite, one `ThreadPoolExecutor` worker |
+| Key parsing | `python-docx`, `pdfplumber`, Gemini fallback |
+| Handwriting | Gemini `gemini-3.5-flash-lite` vision |
+| Scoring | `transformers` MiniLM `sentence-transformers/all-MiniLM-L6-v2` |
+| Images | Pillow |
+| Tests | pytest |
 
-### 3. Data Layer
-
-- **SQLite** — evaluation records, review flags
-- **pandas** — marksheet generation
-- **Photos + Answer Keys** — stored on disk
+No Docker, Redis, Celery, auth, or production queue is required for the demo.
 
 ---
 
-## Tech Stack
+## Repository layout
 
-| Category | Tools |
-| --- | --- |
-| Language | Python 3.10+ |
-| Deep learning | PyTorch |
-| OCR | TrOCR (Hugging Face `transformers`) |
-| Embeddings | Sentence-Transformers (Sentence-BERT) |
-| Image processing | OpenCV |
-| Web UI | Streamlit |
-| Storage | SQLite, pandas |
-| Hardware | Standard laptop CPU (GPU optional) + smartphone camera |
+```text
+backend/
+  app/
+    api/          FastAPI routers and schemas
+    core/         config, SQLite helpers, errors, worker
+    ml/           key parse, Gemini wrapper, transcription, scoring
+  fixtures/       demo seed, 3-question key draft, transcript fixtures
+  tests/          API and ML tests
+  requirements.txt
+  .env.example
 
----
+frontend/
+  src/            React screens, API client, mock fixtures
+  package.json
 
-## Expected Outcomes
-
-- A working prototype web application: the lecturer uploads the answer key once,
-  photographs each answer book, and receives suggested scores per answer with
-  unclear cases flagged for review.
-- Final marks exported as a **digital marksheet (CSV)**, reducing manual effort
-  while keeping grading fair, consistent, and auditable.
-- **Measurable evaluation:** OCR accuracy via character error rate (CER) and
-  agreement of suggested scores with faculty-given marks over the collected dataset.
-- Extensible to coaching centres and competitive-exam evaluation cells for
-  faster, more consistent results.
-
----
-
-## Evaluation Metrics
-
-| Metric | What it measures |
-| --- | --- |
-| **CER** (Character Error Rate) | Handwriting recognition quality |
-| **Score agreement** (suggested vs faculty) | Reliability of the provisional scoring |
-| **Flag rate** | Share of answers routed to human review |
-| **Review time saved** | Practical impact on evaluation workload |
-
----
-
-## Project Structure (planned)
-
-```
-smartEval/
-├── app.py                  # Streamlit entry point
-├── src/
-│   ├── preprocessing.py    # OpenCV: deskew, crop, binarize
-│   ├── ocr.py              # TrOCR inference wrapper
-│   ├── embeddings.py       # Sentence-Transformer encoding
-│   ├── scoring.py          # Cosine similarity + tolerance mapping
-│   ├── database.py         # SQLite access layer
-│   └── export.py           # pandas CSV marksheet generation
-├── data/
-│   ├── answer_keys/        # Uploaded model answers
-│   └── scripts/            # Captured answer-book images
-├── tests/
-├── requirements.txt
-└── README.md
+docs/
+  API_CONTRACT.md     frozen backend contract
+  BACKEND.md          backend design and implementation notes
+  WORK_SPLIT.md       two-developer ownership
+  samples/            sample answer keys
 ```
 
+Runtime photos, keys, and the SQLite database live under `data/` and are ignored
+by git.
+
 ---
 
-## Getting Started
+## Running the demo
 
-> The implementation is in progress; the commands below reflect the intended setup.
+### 1. Backend
 
-```bash
-# 1. Clone
-git clone https://github.com/Mitrakulal/smartEval.git
-cd smartEval
-
-# 2. Create an environment
+```powershell
+cd backend
 python -m venv .venv
-.venv\Scripts\activate        # Windows
-# source .venv/bin/activate   # Linux / macOS
-
-# 3. Install dependencies
+.\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-
-# 4. Run the app
-streamlit run app.py
+copy .env.example .env
+# edit .env and set GEMINI_API_KEY for a live call; leave it empty for fixtures
+python -m fixtures.demo_seed
+uvicorn app.main:app --reload --port 8000
 ```
 
-Expected core dependencies:
+The first scoring run downloads the MiniLM model once. After that it works
+offline. Without a Gemini key, `DEMO_MODE=1` uses the demo transcript fixtures;
+the rest of the pipeline still runs for real.
 
+### 2. Frontend
+
+```powershell
+cd frontend
+npm install
+npm run dev          # mock mode by default; no backend needed
 ```
-torch
-transformers
-sentence-transformers
-opencv-python
-streamlit
-pandas
-pillow
+
+To use the real API instead of the frontend mocks, set `VITE_MOCK=0` before
+starting Vite, or edit `frontend/.env.development`:
+
+```powershell
+$env:VITE_MOCK="0"
+npm run dev
 ```
+
+Vite proxies `/api` to `http://localhost:8000`.
+
+### 3. Demo key
+
+Use the 3-question sample at `docs/samples/CN_CIE1_AnswerKey_3Q.docx` for the
+demo. The original 8-question sample remains available for parser testing.
+
+The seeded database is already `READY` with the same three questions and with
+Ravi Kumar pre-evaluated. Asha Rao is the clean student for a live upload.
+
+---
+
+## Tests
+
+```powershell
+cd backend
+.\.venv\Scripts\python.exe -m pytest -q
+
+cd ..\frontend
+npm run build
+npm run lint
+```
+
+The fixture path exercises upload -> background job -> transcript -> score ->
+review without a Gemini key. A live Gemini rehearsal still needs a real key and
+sample handwriting photos.
+
+---
+
+## Privacy and free-tier note
+
+Gemini's free tier may use content to improve Google products. Use only sample
+or team-owned handwriting for the demo. Do not upload real student scripts
+without a paid key and departmental approval.
 
 ---
 
@@ -245,18 +175,17 @@ pillow
 | Puneet K C | 4SF34CI129 | Team Member |
 
 **Guide:** Ms. Shreekshitha
-**Domain:** Artificial Intelligence — Computer Vision & Natural Language Processing
+**Domain:** Artificial Intelligence - Computer Vision & Natural Language Processing
 
 ---
 
 ## References
 
-1. M. Li et al., "TrOCR: Transformer-based Optical Character Recognition with
-   Pre-trained Models," arXiv:2109.10282, 2021.
-2. N. Reimers, I. Gurevych, "Sentence-BERT: Sentence Embeddings using Siamese
-   BERT-Networks," EMNLP-IJCNLP, 2019.
-3. R. Smith, "An Overview of the Tesseract OCR Engine," ICDAR, 2007.
-4. M. D. Shermis & J. Burstein (Eds.), *Handbook of Automated Essay Scoring*,
+1. Google, "Gemini API documentation," 2026.
+2. N. Reimers and I. Gurevych, "Sentence-BERT: Sentence Embeddings using
+   Siamese BERT-Networks," EMNLP-IJCNLP, 2019.
+3. `sentence-transformers/all-MiniLM-L6-v2`, Hugging Face model card.
+4. M. D. Shermis and J. Burstein (Eds.), *Handbook of Automated Essay Scoring*,
    Routledge, 2013.
 
 ---

@@ -2,19 +2,19 @@
   {
     "usn": "4SF22CS001",
     "name": "Asha Rao",
-    "answered": 3,
+    "answered": 0,
     "total": 3,
-    "average": 3.67,
-    "flags": 2,
-    "status": "complete"
+    "average": null,
+    "flags": 0,
+    "status": "not_started"
   },
   {
     "usn": "4SF22CS002",
     "name": "Ravi Kumar",
-    "answered": 2,
+    "answered": 3,
     "total": 3,
-    "average": 3.75,
-    "flags": 1,
-    "status": "in_progress"
+    "average": 4.0,
+    "flags": 0,
+    "status": "complete"
   }
 ]

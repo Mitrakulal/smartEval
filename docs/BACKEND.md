@@ -1,9 +1,37 @@
-# Backend — Demo Build Plan
+# Backend - Demo Build Plan
 
-**Status:** Planned — no backend code yet
+**Status:** Implemented on branch `backend-gemini` - demo path functional with fixtures; live Gemini still needs a key/rehearsal
 **Scope:** Demo-first, one exam, 2 students, 3 questions, 3 photos (2 warmed, 1 live)
 **Contract:** `docs/API_CONTRACT.md` v1.4 (frozen)
 **Owners:** Dev A (API & Data) and Dev B (AI & Pipeline) — see `docs/WORK_SPLIT.md`
+
+---
+
+## 0. Current implementation notes
+
+The plan below is the design; these are the deliberate implementation choices in
+the current branch:
+
+- `backend/app/ml/**` and `backend/app/core/worker.py` now exist and are wired
+  into `/api` (key parse/confirm and answer upload).
+- Key parsing tries the deterministic DOCX/PDF paragraph + rubric-table parser
+  first. Gemini is the fallback for unusual layouts or scanned PDFs. This keeps
+  the demo key exact and avoids a mandatory API call during setup.
+- Scoring uses `transformers` `AutoModel` + mean pooling for
+  `sentence-transformers/all-MiniLM-L6-v2`. The `sentence-transformers` package
+  itself is not used because its pooling loader is incompatible with the installed
+  transformers version; vectors are still normalized 384-d MiniLM vectors.
+- The upload endpoint accepts the multipart field name `image` (React) or
+  `file` (API tests) and returns the normal `202 {"job_id": ...}` envelope.
+- The demo key for the 3-question subset is
+  `docs/samples/CN_CIE1_AnswerKey_3Q.docx`; the original 8-question sample is
+  kept for parser testing.
+- Image files are normalized to `data/images/{uuid}_{name}_norm.jpg`; the answer
+  row points at that file and the original upload is removed after a successful
+  normalization.
+- Job progress is approximately `0.05 preprocess -> 0.25 ocr -> 0.60 embed ->
+  0.85 score -> 1.00 done`. Failures set the answer to `error` and expose
+  `EVALUATION_FAILED` through the job error envelope.
 
 ---
 
@@ -53,7 +81,7 @@ load, no exhaustive edge cases.
 | Jobs | `ThreadPoolExecutor(max_workers=1)` | One worker is enough for the demo |
 | Key parsing | `python-docx` / `pdfplumber` + Gemini | Born-digital text is exact; Gemini structures it |
 | Handwriting | Gemini `gemini-3.5-flash-lite` | Vision + PDF/image input, free tier, structured output |
-| Scoring | `sentence-transformers` `all-MiniLM-L6-v2` | Local, deterministic, explainable, no extra API calls |
+| Scoring | `transformers` MiniLM `all-MiniLM-L6-v2` | Local, deterministic, explainable, no extra API calls |
 | Images | Pillow | EXIF rotation, resize, JPEG conversion |
 | Tests | pytest + httpx | Same stack as the frontend contract |
 
@@ -100,7 +128,7 @@ Runtime files live outside the repo, under `data/`:
 
 ```text
 data/keys/      uploaded answer key
-data/images/    normalized answer photos, by USN
+data/images/    normalized answer photos (flat UUID filenames)
 data/smarteval.db
 ```
 
@@ -219,9 +247,12 @@ student totals that have at least one evaluated answer.
 - If the text layer is empty (scanned PDF), the demo can reject with
   `INVALID_FILE` or send the PDF to Gemini. Not required for demo day.
 
-### Gemini call
+### Gemini fallback
 
-One call per exam, model `gemini-3.5-flash-lite`, temperature `0`, JSON response.
+When the local parser cannot produce a usable key, make one call with model
+`gemini-3.5-flash-lite`, temperature `0`, and a JSON response. The deterministic
+parser is preferred for ordinary DOCX/PDF keys because it preserves rubric tables
+exactly.
 
 Prompt requirements:
 
@@ -256,11 +287,11 @@ string. Reject negative or zero marks.
 
 ### Fallback
 
-If Gemini is unavailable, times out, or returns invalid JSON:
+If the local parser is not usable, try Gemini. If both fail:
 
-1. Try the heuristic parser.
-2. If that fails, load `backend/fixtures/demo_key_draft.json`.
-3. Return it with `warnings: ["Demo fallback: 3-question subset"]`.
+1. Load `backend/fixtures/demo_key_draft.json` when `DEMO_MODE=1`.
+2. Return it with a warning that the demo fixture was used.
+3. Otherwise raise, and the API returns a validation error.
 
 The fixture must contain the same three questions used on stage: `1a`, `1b`,
 `2a`. The demo starts at `READY`, so a live key parse is demonstrated only in
@@ -285,7 +316,7 @@ rehearsal, not on stage.
 - Apply EXIF orientation.
 - Convert to RGB.
 - Resize so the long edge is at most **2000 px** (do not upscale).
-- Save JPEG quality 90 to `data/images/{usn}/{question_id}_{uuid}.jpg`.
+- Save JPEG quality 90 to `data/images/{uuid}_{name}_norm.jpg`.
 - The image endpoint serves this normalized file.
 
 ### Cache
@@ -420,11 +451,11 @@ Lifecycle:
 
 ```text
 queued
-  → running / preprocess  0.10
-  → running / ocr         0.30
-  → running / embed       0.60
-  → running / score       0.80
-  → done                  1.00
+  -> running / preprocess  0.05
+  -> running / ocr         0.25
+  -> running / embed       0.60
+  -> running / score       0.85
+  -> done                  1.00
 ```
 
 On failure:
@@ -452,6 +483,10 @@ DEMO_MODE=1
 MOCK_TRANSCRIBE=0
 POINT_THRESHOLD=0.55
 BORDERLINE_BAND=0.10
+EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
+MAX_IMAGE_EDGE=2000
+JPEG_QUALITY=90
+LOW_OCR_CONFIDENCE=0.55
 ```
 
 Rules:
@@ -483,12 +518,12 @@ Frontend dev server proxies `/api` to `http://localhost:8000`.
 - Exam: `READY`, subject `Computer Networks`, questions `1a`, `1b`, `2a`.
 - Student 1: `4SF22CS001`, Asha Rao — live upload.
 - Student 2: `4SF22CS002`, Ravi Kumar — pre-evaluated, reviewed.
-- Key points: 3 + 3 + 6 from the sample CN key.
+- Key points: 3 + 3 + 6 from `CN_CIE1_AnswerKey_3Q.docx`.
 - Fixture transcripts: one per question, written to cover most key points.
 
 ### Before the demo
 
-1. Parse and confirm the key; verify `READY`.
+1. Parse and confirm `CN_CIE1_AnswerKey_3Q.docx`; verify `READY`.
 2. Create both students.
 3. Pre-evaluate student 2 fully; accept the marks.
 4. Rehearse **two** of student 1's photos and warm their cache; keep the third
@@ -563,9 +598,8 @@ boundaries. Never trade demo reliability for completeness.
 These still describe the earlier local-TrOCR design and are **not** the backend
 source of truth for the demo:
 
-- `README.md` — architecture and references mention TrOCR
-- `docs/SPEC.md` — pipeline and locked decisions mention TrOCR
-- `docs/GEMINI.md` — records the original local-first/optional-adapter decision
+- `docs/SPEC.md` - historical specification; see the note at the top.
+- `docs/GEMINI.md` - superseded local-first decision record.
 
 `docs/API_CONTRACT.md` v1.4 and this file win for implementation. Rewrite the
 stale docs after the demo path works.

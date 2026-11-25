@@ -1,133 +1,161 @@
 {
   "usn": "4SF22CS001",
   "name": "Asha Rao",
-  "total_marks": 11.0,
-  "max_marks": 15,
+  "total_marks": 0,
+  "max_marks": 12,
   "answers": [
     {
-      "answer_id": 11,
+      "answer_id": null,
       "question_id": 1,
-      "question_number": "1",
-      "question_text": "Explain Dijkstra's algorithm.",
-      "max_marks": 5,
-      "status": "evaluated",
-      "image_url": "/api/answers/11/image",
-      "transcript": "Dijkstra algorithm is used to find the shortest path from a source node to all other nodes in a weighted graph. It uses a priority queue to select the next node with the smallest distance. The algorithm assumes that all edge weights are non negative.",
-      "ocr_confidence": 0.81,
+      "question_number": "1a",
+      "question_text": "Define the OSI reference model. Name its seven layers and state one function of each.",
+      "max_marks": 3,
+      "status": "pending",
+      "image_url": null,
+      "transcript": null,
+      "ocr_confidence": null,
+      "key_points": [
+        {
+          "id": 1,
+          "text": "OSI is a seven-layer reference architecture; each layer provides a service to the layer above and uses the layer below",
+          "covered": false,
+          "similarity": 0,
+          "borderline": false
+        },
+        {
+          "id": 2,
+          "text": "The seven layers are Physical, Data Link, Network, Transport, Session, Presentation, and Application",
+          "covered": false,
+          "similarity": 0,
+          "borderline": false
+        },
+        {
+          "id": 3,
+          "text": "Each layer has a well-defined function such as bit transmission, framing, routing, end-to-end delivery, dialog control, translation, or user services",
+          "covered": false,
+          "similarity": 0,
+          "borderline": false
+        }
+      ],
+      "coverage": null,
+      "covered_count": 0,
+      "key_point_count": 3,
+      "suggested_marks": null,
+      "final_marks": null,
+      "decision": null,
+      "flags": [],
+      "needs_review": false,
+      "review_reason": null,
+      "evaluated_at": null
+    },
+    {
+      "answer_id": null,
+      "question_id": 2,
+      "question_number": "1b",
+      "question_text": "Differentiate circuit switching and packet switching.",
+      "max_marks": 3,
+      "status": "pending",
+      "image_url": null,
+      "transcript": null,
+      "ocr_confidence": null,
+      "key_points": [
+        {
+          "id": 4,
+          "text": "Circuit switching establishes a dedicated physical path for the entire communication; packet switching sends independent packets using store-and-forward",
+          "covered": false,
+          "similarity": 0,
+          "borderline": false
+        },
+        {
+          "id": 5,
+          "text": "Circuit switching reserves bandwidth even during idle periods; packet switching shares links statistically",
+          "covered": false,
+          "similarity": 0,
+          "borderline": false
+        },
+        {
+          "id": 6,
+          "text": "Circuit switching suits continuous voice traffic; packet switching suits bursty data traffic",
+          "covered": false,
+          "similarity": 0,
+          "borderline": false
+        }
+      ],
+      "coverage": null,
+      "covered_count": 0,
+      "key_point_count": 3,
+      "suggested_marks": null,
+      "final_marks": null,
+      "decision": null,
+      "flags": [],
+      "needs_review": false,
+      "review_reason": null,
+      "evaluated_at": null
+    },
+    {
+      "answer_id": null,
+      "question_id": 3,
+      "question_number": "2a",
+      "question_text": "Explain the TCP three-way handshake used to establish a connection.",
+      "max_marks": 6,
+      "status": "pending",
+      "image_url": null,
+      "transcript": null,
+      "ocr_confidence": null,
       "key_points": [
         {
           "id": 7,
-          "text": "Finds the shortest path from a source node",
-          "covered": true,
-          "similarity": 0.84,
+          "text": "Client sends a SYN segment carrying its initial sequence number",
+          "covered": false,
+          "similarity": 0,
           "borderline": false
         },
         {
           "id": 8,
-          "text": "Uses a priority queue to pick the next node",
+          "text": "Server replies with SYN-ACK, acknowledging the client ISN and sending its own ISN",
           "covered": false,
-          "similarity": 0.52,
-          "borderline": true
+          "similarity": 0,
+          "borderline": false
         },
         {
           "id": 9,
-          "text": "Requires non-negative edge weights",
-          "covered": true,
-          "similarity": 0.72,
+          "text": "Client sends ACK acknowledging the server ISN, and the connection is established",
+          "covered": false,
+          "similarity": 0,
           "borderline": false
-        }
-      ],
-      "coverage": 0.67,
-      "covered_count": 2,
-      "key_point_count": 3,
-      "suggested_marks": 3.5,
-      "final_marks": 3.5,
-      "decision": "pending",
-      "flags": ["borderline"],
-      "needs_review": true,
-      "review_reason": null,
-      "evaluated_at": "2026-10-28T09:45:00Z"
-    },
-    {
-      "answer_id": 12,
-      "question_id": 2,
-      "question_number": "2",
-      "question_text": "Differentiate TCP and UDP.",
-      "max_marks": 5,
-      "status": "evaluated",
-      "image_url": "/api/answers/12/image",
-      "transcript": "TCP is connection oriented and provides reliable delivery with acknowledgements and retransmission. UDP is connectionless and does not guarantee delivery. UDP has less overhead and lower latency, so it is used for streaming and gaming.",
-      "ocr_confidence": 0.88,
-      "key_points": [
+        },
         {
           "id": 10,
-          "text": "TCP is connection oriented, UDP is connectionless",
-          "covered": true,
-          "similarity": 0.91,
+          "text": "Both endpoints synchronize their initial sequence numbers",
+          "covered": false,
+          "similarity": 0,
           "borderline": false
         },
         {
           "id": 11,
-          "text": "TCP guarantees delivery, UDP does not",
-          "covered": true,
-          "similarity": 0.86,
+          "text": "The handshake prevents an old duplicate connection request from being accepted",
+          "covered": false,
+          "similarity": 0,
           "borderline": false
         },
         {
           "id": 12,
-          "text": "UDP has lower overhead and latency",
-          "covered": true,
-          "similarity": 0.79,
+          "text": "A labelled client/server diagram shows the SYN, SYN-ACK, and ACK exchange",
+          "covered": false,
+          "similarity": 0,
           "borderline": false
         }
       ],
-      "coverage": 1.0,
-      "covered_count": 3,
-      "key_point_count": 3,
-      "suggested_marks": 5.0,
-      "final_marks": 5.0,
-      "decision": "pending",
+      "coverage": null,
+      "covered_count": 0,
+      "key_point_count": 6,
+      "suggested_marks": null,
+      "final_marks": null,
+      "decision": null,
       "flags": [],
       "needs_review": false,
       "review_reason": null,
-      "evaluated_at": "2026-10-28T09:47:00Z"
-    },
-    {
-      "answer_id": 13,
-      "question_id": 3,
-      "question_number": "3",
-      "question_text": "What is subnet masking?",
-      "max_marks": 5,
-      "status": "evaluated",
-      "image_url": "/api/answers/13/image",
-      "transcript": "A subnet mask is used to separate the network part and the host part of an IP address. It divides a large network into smaller subnetworks.",
-      "ocr_confidence": 0.48,
-      "key_points": [
-        {
-          "id": 13,
-          "text": "Separates the network portion from the host portion of an address",
-          "covered": true,
-          "similarity": 0.78,
-          "borderline": false
-        },
-        {
-          "id": 14,
-          "text": "Divides a network into smaller subnets",
-          "covered": false,
-          "similarity": 0.44,
-          "borderline": false
-        }
-      ],
-      "coverage": 0.5,
-      "covered_count": 1,
-      "key_point_count": 2,
-      "suggested_marks": 2.5,
-      "final_marks": 2.5,
-      "decision": "pending",
-      "flags": ["low_ocr_confidence"],
-      "needs_review": true,
-      "review_reason": null,
-      "evaluated_at": "2026-10-28T09:49:00Z"
+      "evaluated_at": null
     }
   ]
 }

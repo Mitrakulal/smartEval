@@ -16,9 +16,9 @@ opencv-python-headless
 # Extraction
 google-genai
 
-# Scoring
-sentence-transformers
-pandas
+# Scoring (local MiniLM; used through transformers directly)
+transformers
+torch
 numpy
 
 # Dev / test

@@ -1,5 +1,12 @@
 # SmartEval — Technical Specification
 
+> **Implementation note:** This document is the original pre-implementation
+> specification. The current demo uses Gemini vision + local MiniLM and a
+> React/FastAPI stack; see `README.md` and `docs/BACKEND.md` for the source of
+> truth. TrOCR/Streamlit references below are historical.
+
+
+
 **AI-Assisted Evaluation of Handwritten Answer Scripts**
 
 Version 1.0 · Status: agreed scope, pre-implementation

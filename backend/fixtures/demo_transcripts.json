@@ -1,0 +1,20 @@
+{
+  "1a": {
+    "transcript": "The OSI model is a seven-layer reference architecture that divides network communication into layers. The physical layer transmits bits, the data link layer handles framing and error control, and the network layer routes packets. The transport layer provides end-to-end delivery, the session layer manages dialogs, the presentation layer translates and encrypts data, and the application layer provides services to the user.",
+    "confidence": 0.92,
+    "legibility": "high",
+    "contains_diagram": false
+  },
+  "1b": {
+    "transcript": "Circuit switching establishes a dedicated physical path before the transfer and keeps it for the whole call, so bandwidth is reserved even when nobody is speaking. Packet switching breaks data into packets and forwards them independently with store-and-forward, sharing links statistically. Circuit switching is good for continuous voice, while packet switching is good for bursty data traffic.",
+    "confidence": 0.90,
+    "legibility": "high",
+    "contains_diagram": false
+  },
+  "2a": {
+    "transcript": "The client sends a SYN segment with its initial sequence number. The server replies with a SYN-ACK that acknowledges the client ISN and carries the server's own initial sequence number. The client then sends an ACK for the server ISN, and the connection is established. Both endpoints have now synchronized their sequence numbers. The exchange also prevents an old duplicate connection request from being accepted. A labelled diagram shows the client and server states for SYN, SYN-ACK and ACK.",
+    "confidence": 0.94,
+    "legibility": "high",
+    "contains_diagram": true
+  }
+}

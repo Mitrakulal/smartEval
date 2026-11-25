@@ -73,7 +73,7 @@ export function useDeleteAnswer(usn: string) {
   });
 }
 
-export function useJobPoll(jobId: string | null, onComplete?: () => void) {
+export function useJobPoll(jobId: string | null) {
   return useQuery({
     queryKey: ['job', jobId],
     queryFn: () => (jobId ? fetchJob(jobId) : Promise.reject('No Job ID')),
@@ -81,12 +81,9 @@ export function useJobPoll(jobId: string | null, onComplete?: () => void) {
     refetchInterval: (query) => {
       const data = query.state.data;
       if (data && (data.status === 'done' || data.status === 'error')) {
-        if (data.status === 'done' && onComplete) {
-          onComplete();
-        }
         return false;
       }
-      return 2000;
+      return 1500;
     },
   });
 }
