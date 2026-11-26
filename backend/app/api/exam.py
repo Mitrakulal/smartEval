@@ -171,8 +171,10 @@ def parse_key(
     try:
         from app.ml.key_parse import parse_key_file
         parse_result = parse_key_file(saved_path, original_filename)
-    except (ImportError, ModuleNotFoundError):
-        logger.info("app.ml.key_parse not found; using fallback mock draft questions")
+    except Exception:
+        logger.exception(
+            "Key parsing failed for %s; using fallback demo draft", original_filename
+        )
 
     if parse_result is not None:
         if hasattr(parse_result, "questions"):
@@ -185,47 +187,51 @@ def parse_key(
             raw_questions = []
             raw_warnings = []
     else:
-        # Fallback mock questions (demo syllabus questions)
+        # Last-resort demo draft aligned with docs/samples/CN_CIE1_AnswerKey.docx.
+        # Normal operation uses app.ml.key_parse; this only runs if that module
+        # itself crashes.
         raw_questions = [
             {
                 "number": "1a",
-                "text": "Define the OSI reference model and explain the functions of the Physical, Data Link, and Network layers.",
+                "text": "Define the OSI reference model. Name its seven layers and state one function of each.",
                 "max_marks": 3.0,
                 "grading_mode": "semantic",
                 "key_points": [
-                    {"text": "Physical layer transmits raw bits over physical medium", "confidence": "parsed"},
-                    {"text": "Data link layer handles framing, physical addressing and error detection", "confidence": "parsed"},
-                    {"text": "Network layer manages logical addressing, routing and packet forwarding", "confidence": "parsed"},
+                    {"text": "OSI is a seven-layer reference architecture; each layer provides a service to the layer above and uses the layer below", "confidence": "parsed"},
+                    {"text": "The seven layers are Physical, Data Link, Network, Transport, Session, Presentation, and Application", "confidence": "parsed"},
+                    {"text": "Each layer has a well-defined function such as bit transmission, framing, routing, end-to-end delivery, dialog control, translation, or user services", "confidence": "parsed"},
                 ],
                 "confidence": {"text": "parsed", "max_marks": "parsed"},
             },
             {
                 "number": "1b",
-                "text": "Differentiate between TCP and UDP protocols based on connection type, reliability, and header size.",
+                "text": "Differentiate circuit switching and packet switching.",
                 "max_marks": 3.0,
                 "grading_mode": "semantic",
                 "key_points": [
-                    {"text": "TCP is connection-oriented; UDP is connectionless", "confidence": "parsed"},
-                    {"text": "TCP guarantees reliable delivery with ACKs; UDP provides best-effort unreliable delivery", "confidence": "parsed"},
-                    {"text": "TCP header is 20-60 bytes; UDP header is fixed at 8 bytes", "confidence": "parsed"},
+                    {"text": "Circuit switching establishes a dedicated physical path for the entire communication; packet switching sends independent packets using store-and-forward", "confidence": "parsed"},
+                    {"text": "Circuit switching reserves bandwidth even during idle periods; packet switching shares links statistically", "confidence": "parsed"},
+                    {"text": "Circuit switching suits continuous voice traffic; packet switching suits bursty data traffic", "confidence": "parsed"},
                 ],
                 "confidence": {"text": "parsed", "max_marks": "parsed"},
             },
             {
                 "number": "2a",
-                "text": "Explain the working of Dijkstra's shortest path routing algorithm with an example network.",
+                "text": "Explain the TCP three-way handshake used to establish a connection.",
                 "max_marks": 6.0,
                 "grading_mode": "semantic",
                 "key_points": [
-                    {"text": "Initializes source distance to 0 and all other nodes to infinity", "confidence": "parsed"},
-                    {"text": "Selects unvisited node with minimum tentative distance iteratively", "confidence": "parsed"},
-                    {"text": "Relaxes neighbors by updating distance if path through current node is shorter", "confidence": "parsed"},
-                    {"text": "Marks current node as visited and repeats until all reachable nodes visited", "confidence": "parsed"},
+                    {"text": "Client sends a SYN segment carrying its initial sequence number", "confidence": "parsed"},
+                    {"text": "Server replies with SYN-ACK, acknowledging the client ISN and sending its own ISN", "confidence": "parsed"},
+                    {"text": "Client sends ACK acknowledging the server ISN, and the connection is established", "confidence": "parsed"},
+                    {"text": "Both endpoints synchronize their initial sequence numbers", "confidence": "parsed"},
+                    {"text": "The handshake prevents an old duplicate connection request from being accepted", "confidence": "parsed"},
+                    {"text": "A labelled client/server diagram shows the SYN, SYN-ACK, and ACK exchange", "confidence": "parsed"},
                 ],
                 "confidence": {"text": "parsed", "max_marks": "parsed"},
             },
         ]
-        raw_warnings = []
+        raw_warnings = ["Key parser unavailable; used built-in 3-question demo draft"]
 
     draft_questions: List[DraftQuestion] = []
     for q in raw_questions:
@@ -398,11 +404,13 @@ def confirm_key(
     try:
         from app.ml.score import embed_texts
         embeddings = embed_texts(all_kp_texts)
-    except (ImportError, ModuleNotFoundError):
-        logger.info("app.ml.score not found; using fallback normalized vectors")
+    except Exception:
+        logger.exception("Embedding generation failed; using fallback vectors")
 
     if embeddings is None or len(embeddings) != len(all_kp_texts):
-        # Fallback mock: 384-dimensional normalized float vectors
+        # This keeps key confirmation usable on a machine without the local
+        # model, but the warning makes clear the vectors are not semantic.
+        logger.warning("Using constant fallback embeddings for key points")
         dim = 384
         val = 1.0 / math.sqrt(dim)
         embeddings = [[val] * dim for _ in all_kp_texts]

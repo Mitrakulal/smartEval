@@ -10,14 +10,18 @@ from app.api.students import router as students_router
 from app.core.config import settings
 from app.core.db import init_db
 from app.core.errors import register_error_handlers
+from app.core.worker import recover_pending_jobs, shutdown_worker
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup: initialize database tables and seed singleton exam row
     init_db()
+    # Requeue any jobs left behind by a previous process (demo durability).
+    recover_pending_jobs()
     yield
-    # Shutdown logic if required
+    # Stop accepting new jobs; an in-flight OCR call is allowed to finish.
+    shutdown_worker(wait=False)
 
 
 app = FastAPI(

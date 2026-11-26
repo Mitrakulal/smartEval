@@ -1,7 +1,7 @@
 /**
  * Response and request types for the SmartEval API.
  *
- * Hand-written from docs/API_CONTRACT.md (v1.1) because the backend has no
+ * Hand-written from docs/API_CONTRACT.md (v1.4) because the backend has no
  * OpenAPI schema yet. When it does, this file is replaced by generated types
  * in a single commit — every component imports from here, so nothing else moves.
  */

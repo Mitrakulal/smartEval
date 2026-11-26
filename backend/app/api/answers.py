@@ -151,10 +151,15 @@ def build_answer_response(
 def upload_answer(
     usn: str,
     question_id: int,
-    file: UploadFile = File(...),
+    file: Optional[UploadFile] = File(None),
     conn: sqlite3.Connection = Depends(get_db),
+    image: Optional[UploadFile] = File(None),
 ) -> JobCreateResponse:
     """Upload a handwritten answer image for asynchronous evaluation.
+
+    Accepts either multipart field name ``file`` (API tests) or ``image`` (the
+    React client).  The frontend contract only specifies multipart, not the field
+    name, so tolerate both.
     
     Guards & Validations:
     - 409 WRONG_STATE if exam state is NO_KEY
@@ -170,6 +175,15 @@ def upload_answer(
     - Returns HTTP 202 Accepted {"job_id": job_id}
     """
     ensure_exam_has_key(conn)
+
+    upload = file or image
+    if upload is None:
+        raise ApiError(
+            status_code=422,
+            code="VALIDATION_ERROR",
+            message="Answer image is required (multipart field 'image' or 'file')",
+            detail={},
+        )
 
     trimmed_usn = usn.strip()
 
@@ -194,17 +208,17 @@ def upload_answer(
         )
 
     # Validate MIME type
-    content_type = (file.content_type or "").lower().split(";")[0].strip()
+    content_type = (upload.content_type or "").lower().split(";")[0].strip()
     if content_type not in ALLOWED_IMAGE_MIMES:
         raise ApiError(
             status_code=400,
             code="INVALID_FILE",
-            message=f"Invalid file type '{file.content_type}'. Must be image/jpeg, image/png, or image/webp",
-            detail={"content_type": file.content_type},
+            message=f"Invalid file type '{upload.content_type}'. Must be image/jpeg, image/png, or image/webp",
+            detail={"content_type": upload.content_type},
         )
 
     # Synchronous read to avoid anyio threadpool deadlocks
-    contents = file.file.read()
+    contents = upload.file.read()
     if not contents or len(contents) == 0:
         raise ApiError(
             status_code=400,
@@ -225,7 +239,7 @@ def upload_answer(
     image_dir = Path(settings.IMAGE_DIR)
     image_dir.mkdir(parents=True, exist_ok=True)
 
-    clean_name = Path(file.filename or "script.jpg").name
+    clean_name = Path(upload.filename or "script.jpg").name
     saved_filename = f"{uuid.uuid4().hex}_{clean_name}"
     saved_path = image_dir / saved_filename
     saved_path.write_bytes(contents)
@@ -293,12 +307,13 @@ def upload_answer(
             (job_id, answer_id, now, now),
         )
 
-    # Trigger background worker enqueue via lazy fallback import
+    # Trigger the background worker.  A worker import/runtime failure must not
+    # turn an accepted upload into a 500, but it must be visible in the log.
     try:
         from app.core.worker import enqueue
         enqueue(job_id)
-    except (ImportError, Exception):
-        pass
+    except Exception:
+        logger.exception("Could not enqueue evaluation job %s", job_id)
 
     return JobCreateResponse(job_id=job_id)
 

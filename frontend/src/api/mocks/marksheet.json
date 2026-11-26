@@ -1,31 +1,31 @@
 {
   "subject": "Computer Networks",
-  "max_marks": 15,
+  "max_marks": 12,
   "questions": [
-    { "question_id": 1, "number": "1", "max_marks": 5 },
-    { "question_id": 2, "number": "2", "max_marks": 5 },
-    { "question_id": 3, "number": "3", "max_marks": 5 }
+    { "question_id": 1, "number": "1a", "max_marks": 3 },
+    { "question_id": 2, "number": "1b", "max_marks": 3 },
+    { "question_id": 3, "number": "2a", "max_marks": 6 }
   ],
   "rows": [
     {
       "usn": "4SF22CS001",
       "name": "Asha Rao",
-      "marks": { "1": 3.5, "2": 5.0, "3": 2.5 },
-      "total": 11.0,
-      "flags": 2,
-      "status": "complete",
-      "review_status": "pending"
+      "marks": {},
+      "total": 0,
+      "flags": 0,
+      "status": "not_started",
+      "review_status": "reviewed"
     },
     {
       "usn": "4SF22CS002",
       "name": "Ravi Kumar",
-      "marks": { "1": 4.5, "2": 3.0 },
-      "total": 7.5,
-      "flags": 1,
-      "status": "in_progress",
-      "review_status": "pending"
+      "marks": { "1": 3, "2": 3, "3": 6 },
+      "total": 12,
+      "flags": 0,
+      "status": "complete",
+      "review_status": "reviewed"
     }
   ],
-  "class_average": 9.2,
-  "generated_at": "2026-10-28T10:00:00Z"
+  "class_average": 12.0,
+  "generated_at": "2026-11-26T00:00:00Z"
 }

@@ -1,42 +1,82 @@
 {
-  "draft_id": "d_9f2a",
-  "filename": "cn_cie1_key.pdf",
+  "draft_id": "d_3q_demo",
+  "filename": "CN_CIE1_AnswerKey_3Q.docx",
   "questions": [
     {
-      "number": "1",
-      "text": "Explain Dijkstra's algorithm.",
-      "max_marks": 5,
+      "number": "1a",
+      "text": "Define the OSI reference model. Name its seven layers and state one function of each.",
+      "max_marks": 3,
       "grading_mode": "semantic",
       "key_points": [
-        { "text": "Finds the shortest path from a source node", "confidence": "parsed" },
-        { "text": "Uses a priority queue to pick the next node", "confidence": "parsed" },
-        { "text": "Requires non-negative edge weights", "confidence": "guessed" }
+        {
+          "text": "OSI is a seven-layer reference architecture; each layer provides a service to the layer above and uses the layer below",
+          "confidence": "parsed"
+        },
+        {
+          "text": "The seven layers are Physical, Data Link, Network, Transport, Session, Presentation, and Application",
+          "confidence": "parsed"
+        },
+        {
+          "text": "Each layer has a well-defined function such as bit transmission, framing, routing, end-to-end delivery, dialog control, translation, or user services",
+          "confidence": "parsed"
+        }
       ],
       "confidence": { "text": "parsed", "max_marks": "parsed" }
     },
     {
-      "number": "2",
-      "text": "Differentiate TCP and UDP.",
-      "max_marks": 5,
+      "number": "1b",
+      "text": "Differentiate circuit switching and packet switching.",
+      "max_marks": 3,
       "grading_mode": "semantic",
       "key_points": [
-        { "text": "TCP is connection oriented, UDP is connectionless", "confidence": "parsed" },
-        { "text": "TCP guarantees delivery, UDP does not", "confidence": "parsed" },
-        { "text": "UDP has lower overhead and latency", "confidence": "parsed" }
+        {
+          "text": "Circuit switching establishes a dedicated physical path for the entire communication; packet switching sends independent packets using store-and-forward",
+          "confidence": "parsed"
+        },
+        {
+          "text": "Circuit switching reserves bandwidth even during idle periods; packet switching shares links statistically",
+          "confidence": "parsed"
+        },
+        {
+          "text": "Circuit switching suits continuous voice traffic; packet switching suits bursty data traffic",
+          "confidence": "parsed"
+        }
       ],
-      "confidence": { "text": "parsed", "max_marks": "guessed" }
+      "confidence": { "text": "parsed", "max_marks": "parsed" }
     },
     {
-      "number": "3",
-      "text": "What is subnet masking?",
-      "max_marks": 5,
+      "number": "2a",
+      "text": "Explain the TCP three-way handshake used to establish a connection.",
+      "max_marks": 6,
       "grading_mode": "semantic",
       "key_points": [
-        { "text": "Separates the network portion from the host portion of an address", "confidence": "parsed" },
-        { "text": "Divides a network into smaller subnets", "confidence": "guessed" }
+        {
+          "text": "Client sends a SYN segment carrying its initial sequence number",
+          "confidence": "parsed"
+        },
+        {
+          "text": "Server replies with SYN-ACK, acknowledging the client ISN and sending its own ISN",
+          "confidence": "parsed"
+        },
+        {
+          "text": "Client sends ACK acknowledging the server ISN, and the connection is established",
+          "confidence": "parsed"
+        },
+        {
+          "text": "Both endpoints synchronize their initial sequence numbers",
+          "confidence": "parsed"
+        },
+        {
+          "text": "The handshake prevents an old duplicate connection request from being accepted",
+          "confidence": "parsed"
+        },
+        {
+          "text": "A labelled client/server diagram shows the SYN, SYN-ACK, and ACK exchange",
+          "confidence": "parsed"
+        }
       ],
-      "confidence": { "text": "parsed", "max_marks": "missing" }
+      "confidence": { "text": "parsed", "max_marks": "parsed" }
     }
   ],
-  "warnings": ["No marks found for Q3 — defaulted to 5"]
+  "warnings": []
 }

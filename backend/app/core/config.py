@@ -31,13 +31,24 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str = ""
     GEMINI_OCR_MODEL: str = "gemini-3.5-flash-lite"
     GEMINI_KEY_MODEL: str = "gemini-3.5-flash-lite"
-    EMBEDDING_MODEL: str = "models/text-embedding-004"
+    GEMINI_MAX_RETRIES: int = 1
+
+    # Local MiniLM embedding model (384 dimensions).  This deliberately runs
+    # locally so answer text is never sent to Gemini a second time for scoring.
+    EMBEDDING_MODEL: str = "sentence-transformers/all-MiniLM-L6-v2"
 
     # Evaluation & Demo Settings
+    # DEMO_MODE=1 enables the bundled key/transcript fixtures when Gemini is not
+    # configured.  It never fabricates marks after a successful transcription.
     DEMO_MODE: int = 1
     MOCK_TRANSCRIBE: int = 0
     POINT_THRESHOLD: float = 0.55
     BORDERLINE_BAND: float = 0.10
+
+    # Image preprocessing
+    MAX_IMAGE_EDGE: int = 2000
+    JPEG_QUALITY: int = 90
+    LOW_OCR_CONFIDENCE: float = 0.55
 
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod

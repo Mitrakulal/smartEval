@@ -1,11 +1,87 @@
 {
-  "state": "NO_KEY",
+  "state": "READY",
   "subject": "Computer Networks",
   "point_threshold": 0.55,
   "borderline_band": 0.1,
-  "question_count": 0,
-  "student_count": 0,
-  "key_filename": null,
-  "questions": [],
-  "updated_at": "2026-10-28T09:30:00Z"
+  "question_count": 3,
+  "student_count": 2,
+  "key_filename": "CN_CIE1_AnswerKey_3Q.docx",
+  "questions": [
+    {
+      "question_id": 1,
+      "number": "1a",
+      "text": "Define the OSI reference model. Name its seven layers and state one function of each.",
+      "max_marks": 3,
+      "grading_mode": "semantic",
+      "key_points": [
+        {
+          "id": 1,
+          "text": "OSI is a seven-layer reference architecture; each layer provides a service to the layer above and uses the layer below"
+        },
+        {
+          "id": 2,
+          "text": "The seven layers are Physical, Data Link, Network, Transport, Session, Presentation, and Application"
+        },
+        {
+          "id": 3,
+          "text": "Each layer has a well-defined function such as bit transmission, framing, routing, end-to-end delivery, dialog control, translation, or user services"
+        }
+      ]
+    },
+    {
+      "question_id": 2,
+      "number": "1b",
+      "text": "Differentiate circuit switching and packet switching.",
+      "max_marks": 3,
+      "grading_mode": "semantic",
+      "key_points": [
+        {
+          "id": 4,
+          "text": "Circuit switching establishes a dedicated physical path for the entire communication; packet switching sends independent packets using store-and-forward"
+        },
+        {
+          "id": 5,
+          "text": "Circuit switching reserves bandwidth even during idle periods; packet switching shares links statistically"
+        },
+        {
+          "id": 6,
+          "text": "Circuit switching suits continuous voice traffic; packet switching suits bursty data traffic"
+        }
+      ]
+    },
+    {
+      "question_id": 3,
+      "number": "2a",
+      "text": "Explain the TCP three-way handshake used to establish a connection.",
+      "max_marks": 6,
+      "grading_mode": "semantic",
+      "key_points": [
+        {
+          "id": 7,
+          "text": "Client sends a SYN segment carrying its initial sequence number"
+        },
+        {
+          "id": 8,
+          "text": "Server replies with SYN-ACK, acknowledging the client ISN and sending its own ISN"
+        },
+        {
+          "id": 9,
+          "text": "Client sends ACK acknowledging the server ISN, and the connection is established"
+        },
+        {
+          "id": 10,
+          "text": "Both endpoints synchronize their initial sequence numbers"
+        },
+        {
+          "id": 11,
+          "text": "The handshake prevents an old duplicate connection request from being accepted"
+        },
+        {
+          "id": 12,
+          "text": "A labelled client/server diagram shows the SYN, SYN-ACK, and ACK exchange"
+        }
+      ]
+    }
+  ],
+  "updated_at": "2026-11-26T00:00:00Z"
 }

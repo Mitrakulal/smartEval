@@ -1,5 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
@@ -15,6 +16,7 @@ import {
   useUploadAnswer,
   useReviewAnswer,
   useDeleteAnswer,
+  useJobPoll,
 } from '../hooks/useStudents.ts';
 import { useSnackbar } from '../hooks/useSnackbar.ts';
 import { extractApiError } from '../api/client.ts';
@@ -30,7 +32,14 @@ import { ReviewBar } from '../components/evaluate/ReviewBar.tsx';
 export function Evaluate() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { showSuccess, showError } = useSnackbar();
+  const [activeJob, setActiveJob] = useState<{
+    id: string;
+    usn: string;
+    questionNumber: string;
+  } | null>(null);
+  const jobQuery = useJobPoll(activeJob?.id ?? null);
 
   const { data: students = [], isLoading: isStudentsLoading, error: studentsError } = useStudents();
   const createStudentMutation = useCreateStudent();
@@ -66,6 +75,34 @@ export function Evaluate() {
   const reviewMutation = useReviewAnswer(activeUsn || '');
   const deleteMutation = useDeleteAnswer(activeUsn || '');
 
+  useEffect(() => {
+    const status = jobQuery.data?.status;
+    if (!activeJob || (status !== 'done' && status !== 'error')) {
+      return;
+    }
+
+    const finish = async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['student', activeJob.usn] }),
+        queryClient.invalidateQueries({ queryKey: ['students'] }),
+        queryClient.invalidateQueries({ queryKey: ['marksheet'] }),
+      ]);
+      if (status === 'done') {
+        showSuccess(`Q${activeJob.questionNumber} evaluated. Review the suggested marks.`);
+      } else {
+        showError(
+          `Q${activeJob.questionNumber} evaluation failed: ${
+            jobQuery.data?.error?.message || 'Unknown error'
+          }`
+        );
+      }
+      setActiveJob(null);
+    };
+    void finish();
+  }, [activeJob, jobQuery.data, queryClient, showError, showSuccess]);
+
+  const isEvaluating = uploadMutation.isPending || activeJob !== null;
+
   const handleSelectStudent = (usn: string) => {
     setSelectedQidOverride(null);
     setSearchParams({ usn });
@@ -87,8 +124,14 @@ export function Evaluate() {
 
   const handleUploadPhoto = (file: File) => {
     uploadMutation.mutate(file, {
-      onSuccess: () => {
-        showSuccess(`Answer script uploaded for Q${activeAnswer?.question_number}`);
+      onSuccess: (res) => {
+        const qNumber = activeAnswer?.question_number ?? '?';
+        setActiveJob({
+          id: res.job_id,
+          usn: activeUsn || '',
+          questionNumber: qNumber,
+        });
+        showSuccess(`Uploaded Q${qNumber}. Reading handwriting...`);
       },
       onError: (err: unknown) => {
         const apiErr = extractApiError(err);
@@ -97,12 +140,16 @@ export function Evaluate() {
     });
   };
 
-  const handleReview = (marks: number, decision: 'accepted' | 'overridden') => {
+  const handleReview = (
+    marks: number,
+    decision: 'accepted' | 'overridden',
+    reason?: string
+  ) => {
     if (!activeAnswer || activeAnswer.answer_id === null) return;
     reviewMutation.mutate(
       {
         answerId: activeAnswer.answer_id,
-        req: { final_marks: marks, decision },
+        req: { final_marks: marks, decision, reason },
       },
       {
         onSuccess: () => {
@@ -237,7 +284,7 @@ export function Evaluate() {
                     <Grid size={{ xs: 12, lg: 4 }}>
                       <ImageCapture
                         imageUrl={activeAnswer.image_url}
-                        isLoading={uploadMutation.isPending}
+                        isLoading={isEvaluating}
                         onUpload={handleUploadPhoto}
                         onDelete={handleDeleteAnswer}
                       />
@@ -249,7 +296,7 @@ export function Evaluate() {
                         transcript={activeAnswer.transcript}
                         confidence={activeAnswer.ocr_confidence}
                         flags={activeAnswer.flags}
-                        isLoading={uploadMutation.isPending}
+                        isLoading={isEvaluating}
                       />
                     </Grid>
 
@@ -263,7 +310,7 @@ export function Evaluate() {
                         suggestedMarks={activeAnswer.suggested_marks}
                         maxMarks={activeAnswer.max_marks}
                         flags={activeAnswer.flags}
-                        isLoading={uploadMutation.isPending}
+                        isLoading={isEvaluating}
                       />
                     </Grid>
                   </Grid>

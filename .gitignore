@@ -17,6 +17,7 @@ data/keys/*
 data/images/*
 !data/keys/.gitkeep
 !data/images/.gitkeep
+backend/data/
 *.db
 *.sqlite3
 
