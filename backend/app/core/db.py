@@ -123,7 +123,14 @@ def get_conn(db_path: Optional[Union[str, Path]] = None) -> sqlite3.Connection:
     target_path = Path(db_path) if db_path else Path(settings.DATABASE_PATH)
     target_path.parent.mkdir(parents=True, exist_ok=True)
 
-    conn = sqlite3.connect(str(target_path), timeout=30.0)
+    # FastAPI runs sync dependency setup, the endpoint, and dependency cleanup
+    # through a thread pool.  They are sequential but may land on different
+    # worker threads, so the per-request connection must allow cross-thread use.
+    conn = sqlite3.connect(
+        str(target_path),
+        timeout=30.0,
+        check_same_thread=False,
+    )
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode = WAL;")
     conn.execute("PRAGMA foreign_keys = ON;")
