@@ -105,7 +105,7 @@ export function SliderField({
               onChangeCommitted={handleBandCommit}
             />
             <Typography variant="caption" color="text.secondary">
-              Scores within this distance from threshold trigger borderline review flag (default 0.10).
+              Uncovered scores just below the threshold within this margin trigger a borderline review flag (default 0.10).
             </Typography>
           </Box>
         </Grid>

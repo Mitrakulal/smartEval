@@ -138,7 +138,7 @@ export function ImageCapture({
               p: 4,
               textAlign: 'center',
               cursor: 'pointer',
-              bgcolor: isDragActive ? 'primary.50' : 'background.default',
+              bgcolor: isDragActive ? 'rgba(108, 76, 241, 0.08)' : 'background.default',
               transition: 'all 0.15s ease',
               '&:hover': {
                 borderColor: 'primary.main',

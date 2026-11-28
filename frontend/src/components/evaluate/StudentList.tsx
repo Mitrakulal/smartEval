@@ -53,7 +53,8 @@ export function StudentList({
       variant="outlined"
       sx={{
         height: '100%',
-        minHeight: 640,
+        minWidth: 0,
+        minHeight: { xs: 420, md: 640 },
         display: 'flex',
         flexDirection: 'column',
         borderRadius: 2,
@@ -63,7 +64,16 @@ export function StudentList({
     >
       {/* Header */}
       <Box sx={{ p: 2, borderBottom: '1px solid', borderColor: 'divider' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 1,
+            mb: 1.5,
+          }}
+        >
           <Box>
             <Typography variant="subtitle1" sx={{ fontWeight: 700, lineHeight: 1.2 }}>
               Students
@@ -123,18 +133,23 @@ export function StudentList({
                 selected={isSelected}
                 onClick={() => onSelectStudent(student.usn)}
                 sx={{
+                  flex: '0 0 auto',
                   borderRadius: 1.5,
                   mb: 0.5,
                   p: 1.5,
                   border: '1px solid',
                   borderColor: isSelected ? 'primary.main' : 'divider',
-                  bgcolor: isSelected ? 'primary.50' : 'background.paper',
+                  bgcolor: isSelected ? 'rgba(108, 76, 241, 0.08)' : 'background.paper',
                   '&:hover': {
-                    bgcolor: isSelected ? 'primary.100' : 'action.hover',
+                    bgcolor: isSelected ? 'rgba(108, 76, 241, 0.13)' : 'action.hover',
                   },
                 }}
               >
                 <ListItemText
+                  slotProps={{
+                    primary: { component: 'div' },
+                    secondary: { component: 'div' },
+                  }}
                   primary={
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.25 }}>
                       <Typography variant="subtitle2" sx={{ fontWeight: 700, color: isSelected ? 'primary.main' : 'text.primary' }}>

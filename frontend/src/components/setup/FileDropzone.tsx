@@ -81,7 +81,7 @@ export function FileDropzone({ onFileSelect, isLoading = false, disabled = false
             width: 64,
             height: 64,
             borderRadius: '50%',
-            bgcolor: isDragActive ? 'primary.light' : 'primary.50',
+            bgcolor: isDragActive ? 'rgba(108, 76, 241, 0.16)' : 'rgba(108, 76, 241, 0.10)',
             color: 'primary.main',
             mb: 2,
           }}

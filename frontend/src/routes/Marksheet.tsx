@@ -6,6 +6,9 @@ import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import Grid from '@mui/material/Grid';
 import DownloadIcon from '@mui/icons-material/Download';
+import EmojiEventsRoundedIcon from '@mui/icons-material/EmojiEventsRounded';
+import FlagRoundedIcon from '@mui/icons-material/FlagRounded';
+import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
 import { useNavigate } from 'react-router-dom';
 import { useExam } from '../hooks/useExam.ts';
 import { useMarksheet, useApproveExam, useDownloadMarksheetCsv } from '../hooks/useMarksheet.ts';
@@ -107,9 +110,42 @@ export function Marksheet() {
     <Box>
       {exam && <StateBanner state={exam.state} />}
 
-      <Paper variant="outlined" sx={{ p: 2.5, mb: 3 }}>
+      <Paper
+        sx={{
+          p: { xs: 2.5, md: 3 },
+          mb: 3,
+          position: 'relative',
+          overflow: 'hidden',
+          color: '#fff',
+          background: 'linear-gradient(120deg, #4E2BEA 0%, #6D4AFF 52%, #A78BFA 100%)',
+          boxShadow: '0 22px 48px rgba(91, 61, 245, 0.26)',
+        }}
+      >
         <Box
           sx={{
+            position: 'absolute',
+            width: 230,
+            height: 230,
+            borderRadius: '50%',
+            top: -110,
+            right: -50,
+            bgcolor: 'rgba(255,255,255,0.10)',
+          }}
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            width: 120,
+            height: 120,
+            borderRadius: '50%',
+            border: '1px solid rgba(255,255,255,0.18)',
+            bottom: -54,
+            right: 150,
+          }}
+        />
+        <Box
+          sx={{
+            position: 'relative',
             display: 'flex',
             alignItems: 'flex-start',
             justifyContent: 'space-between',
@@ -118,19 +154,32 @@ export function Marksheet() {
           }}
         >
           <Box>
-            <Typography variant="h6" gutterBottom>
+            <Typography
+              variant="overline"
+              sx={{ color: 'rgba(255,255,255,0.72)', fontSize: '0.66rem' }}
+            >
+              Exam summary
+            </Typography>
+            <Typography variant="h4" sx={{ fontWeight: 800, letterSpacing: '-0.04em', mt: 0.2 }}>
               {sheet.subject || 'Marksheet'}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.78)', mt: 0.8 }}>
               {sheet.rows.length} {sheet.rows.length === 1 ? 'student' : 'students'} · Total{' '}
               {sheet.max_marks} marks · Class average {average}
             </Typography>
           </Box>
           <Button
-            variant="outlined"
+            variant="contained"
             startIcon={<DownloadIcon />}
             onClick={handleExport}
             disabled={!hasRows || exportMutation.isPending}
+            sx={{
+              bgcolor: '#fff',
+              color: '#5B3DF5',
+              boxShadow: 'none',
+              '&:hover': { bgcolor: '#F5F2FF', boxShadow: 'none' },
+              '&.Mui-disabled': { bgcolor: 'rgba(255,255,255,0.35)', color: 'rgba(255,255,255,0.8)' },
+            }}
           >
             {exportMutation.isPending ? 'Exporting...' : 'Export CSV'}
           </Button>
@@ -148,42 +197,124 @@ export function Marksheet() {
         <>
           <Grid container spacing={2} sx={{ mb: 3 }}>
             <Grid size={{ xs: 12, sm: 4 }}>
-              <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
-                <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, textTransform: 'uppercase' }}>
-                  Total Evaluated
-                </Typography>
-                <Typography variant="h5" sx={{ fontWeight: 700, mt: 0.5, color: 'text.primary' }}>
-                  {counts.all}
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {counts.incomplete > 0 ? `${counts.incomplete} incomplete` : 'All students submitted'}
-                </Typography>
+              <Paper variant="outlined" sx={{ p: 2.25, height: '100%' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.75 }}>
+                  <Box
+                    sx={{
+                      width: 46,
+                      height: 46,
+                      borderRadius: 2.5,
+                      display: 'grid',
+                      placeItems: 'center',
+                      bgcolor: 'rgba(108, 76, 241, 0.10)',
+                      color: 'primary.main',
+                      flexShrink: 0,
+                    }}
+                  >
+                    <GroupsRoundedIcon />
+                  </Box>
+                  <Box sx={{ minWidth: 0 }}>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}
+                    >
+                      Total evaluated
+                    </Typography>
+                    <Typography variant="h5" sx={{ fontWeight: 800, mt: 0.1, color: 'text.primary' }}>
+                      {counts.all}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {counts.incomplete > 0 ? `${counts.incomplete} incomplete` : 'All students submitted'}
+                    </Typography>
+                  </Box>
+                </Box>
               </Paper>
             </Grid>
             <Grid size={{ xs: 12, sm: 4 }}>
-              <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
-                <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, textTransform: 'uppercase' }}>
-                  Class Average
-                </Typography>
-                <Typography variant="h5" sx={{ fontWeight: 700, mt: 0.5, color: 'primary.main' }}>
-                  {average} <Box component="span" sx={{ fontSize: '0.875rem', fontWeight: 500, color: 'text.secondary' }}>/ {sheet.max_marks}</Box>
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  Across all graded questions
-                </Typography>
+              <Paper variant="outlined" sx={{ p: 2.25, height: '100%' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.75 }}>
+                  <Box
+                    sx={{
+                      width: 46,
+                      height: 46,
+                      borderRadius: 2.5,
+                      display: 'grid',
+                      placeItems: 'center',
+                      bgcolor: 'rgba(34, 197, 94, 0.10)',
+                      color: 'success.main',
+                      flexShrink: 0,
+                    }}
+                  >
+                    <EmojiEventsRoundedIcon />
+                  </Box>
+                  <Box sx={{ minWidth: 0 }}>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}
+                    >
+                      Class average
+                    </Typography>
+                    <Typography variant="h5" sx={{ fontWeight: 800, mt: 0.1, color: 'primary.main' }}>
+                      {average}{' '}
+                      <Box
+                        component="span"
+                        sx={{ fontSize: '0.875rem', fontWeight: 600, color: 'text.secondary' }}
+                      >
+                        / {sheet.max_marks}
+                      </Box>
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      Across all graded questions
+                    </Typography>
+                  </Box>
+                </Box>
               </Paper>
             </Grid>
             <Grid size={{ xs: 12, sm: 4 }}>
-              <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
-                <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, textTransform: 'uppercase' }}>
-                  Flagged Answers
-                </Typography>
-                <Typography variant="h5" sx={{ fontWeight: 700, mt: 0.5, color: counts.review > 0 ? 'warning.main' : 'success.main' }}>
-                  {counts.review}
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {counts.review > 0 ? 'Borderline or low confidence' : 'Zero flags pending review'}
-                </Typography>
+              <Paper variant="outlined" sx={{ p: 2.25, height: '100%' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.75 }}>
+                  <Box
+                    sx={{
+                      width: 46,
+                      height: 46,
+                      borderRadius: 2.5,
+                      display: 'grid',
+                      placeItems: 'center',
+                      bgcolor:
+                        counts.review > 0
+                          ? 'rgba(245, 158, 11, 0.12)'
+                          : 'rgba(34, 197, 94, 0.10)',
+                      color: counts.review > 0 ? 'warning.main' : 'success.main',
+                      flexShrink: 0,
+                    }}
+                  >
+                    <FlagRoundedIcon />
+                  </Box>
+                  <Box sx={{ minWidth: 0 }}>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}
+                    >
+                      Flagged answers
+                    </Typography>
+                    <Typography
+                      variant="h5"
+                      sx={{
+                        fontWeight: 800,
+                        mt: 0.1,
+                        color: counts.review > 0 ? 'warning.main' : 'success.main',
+                      }}
+                    >
+                      {counts.review}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {counts.review > 0 ? 'Borderline or low confidence' : 'Zero flags pending review'}
+                    </Typography>
+                  </Box>
+                </Box>
               </Paper>
             </Grid>
           </Grid>

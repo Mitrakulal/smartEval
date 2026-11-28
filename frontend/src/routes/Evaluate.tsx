@@ -7,7 +7,9 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
+import Avatar from '@mui/material/Avatar';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 
 import {
   useStudents,
@@ -193,26 +195,62 @@ export function Evaluate() {
     <Box sx={{ pb: 6 }}>
       {/* Top Banner / Student Navigation */}
       {studentDetail && (
-        <Paper variant="outlined" sx={{ p: 2, mb: 3, borderRadius: 2 }}>
+        <Paper
+          sx={{
+            p: { xs: 2, md: 2.5 },
+            mb: 3,
+            border: '1px solid',
+            borderColor: 'rgba(108, 76, 241, 0.14)',
+            background:
+              'linear-gradient(120deg, rgba(108, 76, 241, 0.10) 0%, rgba(255, 255, 255, 1) 56%)',
+            boxShadow: 'none',
+          }}
+        >
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, minWidth: 0, flexWrap: 'wrap' }}>
               <Button
-                variant="outlined"
+                variant="text"
                 size="small"
                 startIcon={<ArrowBackIcon />}
                 onClick={() => navigate('/marksheet')}
+                sx={{ color: 'text.secondary', minWidth: 'auto', px: 1 }}
               >
                 Marksheet
               </Button>
-              <Box>
-                <Typography variant="h6" sx={{ fontWeight: 700, lineHeight: 1.2 }}>
+              <Avatar
+                sx={{
+                  width: 46,
+                  height: 46,
+                  background: 'linear-gradient(135deg, #7C5CFF 0%, #5B3DF5 100%)',
+                  boxShadow: '0 8px 18px rgba(91, 61, 245, 0.22)',
+                  flexShrink: 0,
+                }}
+              >
+                <PersonRoundedIcon />
+              </Avatar>
+              <Box sx={{ minWidth: 0, flex: '1 1 240px' }}>
+                <Typography
+                  variant="overline"
+                  sx={{ color: 'primary.main', fontSize: '0.64rem', display: 'block' }}
+                >
+                  Student script
+                </Typography>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontWeight: 800,
+                    lineHeight: 1.2,
+                    letterSpacing: '-0.02em',
+                    overflowWrap: 'anywhere',
+                  }}
+                >
                   {studentDetail.usn} — {studentDetail.name}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  Total Awarded:{' '}
-                  <strong>
+                  Total awarded:{' '}
+                  <Box component="span" sx={{ fontWeight: 700, color: 'text.primary' }}>
                     {studentDetail.total_marks} / {studentDetail.max_marks} marks
-                  </strong>
+                  </Box>
                 </Typography>
               </Box>
             </Box>
@@ -222,10 +260,12 @@ export function Evaluate() {
                 label={`${studentDetail.answers.filter((a) => a.status === 'evaluated').length} / ${
                   studentDetail.answers.length
                 } Evaluated`}
-                color="primary"
-                variant="outlined"
                 size="small"
-                sx={{ fontWeight: 600 }}
+                sx={{
+                  bgcolor: 'rgba(108, 76, 241, 0.10)',
+                  color: 'primary.main',
+                  fontWeight: 700,
+                }}
               />
             </Box>
           </Box>

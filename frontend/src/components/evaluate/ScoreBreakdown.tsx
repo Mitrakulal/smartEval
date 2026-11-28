@@ -71,7 +71,7 @@ export function ScoreBreakdown({
               px: 1.25,
               py: 0.25,
               borderRadius: 1.5,
-              bgcolor: 'primary.50',
+              bgcolor: 'rgba(108, 76, 241, 0.09)',
               color: 'primary.main',
               fontWeight: 700,
               fontSize: '0.8125rem',

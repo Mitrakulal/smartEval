@@ -42,14 +42,18 @@ export function QuestionTabs({ answers, selectedQid, onSelectQuestion }: Questio
               cursor: 'pointer',
               border: '1px solid',
               borderColor: isSelected ? 'primary.main' : 'divider',
-              bgcolor: isSelected ? 'primary.main' : 'background.paper',
+              background: isSelected
+                ? 'linear-gradient(135deg, #7C5CFF 0%, #5B3DF5 100%)'
+                : 'background.paper',
               color: isSelected ? 'primary.contrastText' : 'text.primary',
               transition: 'all 0.15s ease',
               whiteSpace: 'nowrap',
-              boxShadow: isSelected ? '0 2px 4px rgba(37,99,235,0.2)' : 'none',
+              boxShadow: isSelected ? '0 8px 20px rgba(108, 76, 241, 0.24)' : 'none',
               '&:hover': {
                 borderColor: 'primary.main',
-                bgcolor: isSelected ? 'primary.main' : 'action.hover',
+                background: isSelected
+                  ? 'linear-gradient(135deg, #7C5CFF 0%, #5B3DF5 100%)'
+                  : 'action.hover',
               },
             }}
           >

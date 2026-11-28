@@ -30,7 +30,7 @@ export function MarksheetTable({ sheet, rows, onRowClick }: MarksheetTableProps)
   return (
     <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
       <Table size="medium" aria-label="Marksheet">
-        <TableHead sx={{ bgcolor: 'action.hover' }}>
+        <TableHead sx={{ bgcolor: '#F8F7FD' }}>
           <TableRow>
             <TableCell sx={{ fontWeight: 600 }}>USN</TableCell>
             <TableCell sx={{ fontWeight: 600 }}>Name</TableCell>
@@ -94,7 +94,7 @@ export function MarksheetTable({ sheet, rows, onRowClick }: MarksheetTableProps)
                     px: 1,
                     py: 0.25,
                     borderRadius: 1,
-                    bgcolor: 'primary.50',
+                    bgcolor: 'rgba(108, 76, 241, 0.10)',
                     color: 'primary.main',
                   }}
                 >
@@ -120,7 +120,7 @@ export function MarksheetTable({ sheet, rows, onRowClick }: MarksheetTableProps)
             </TableRow>
           ))}
         </TableBody>
-        <TableFooter sx={{ bgcolor: 'action.hover' }}>
+        <TableFooter sx={{ bgcolor: '#F8F7FD' }}>
           <TableRow>
             <TableCell colSpan={2 + sheet.questions.length} align="right" sx={{ fontWeight: 600 }}>
               Class average
