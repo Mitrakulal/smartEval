@@ -215,8 +215,12 @@ def score_answer(
 
         similarity = max(-1.0, min(1.0, similarity))
         covered = similarity >= float(point_threshold)
-        borderline = abs(similarity - float(point_threshold)) <= float(
-            borderline_band
+        # Only near misses need review.  A point that is already covered (and
+        # therefore earning its mark) must not create a noisy borderline flag
+        # just because it sits a little above the threshold.
+        borderline = (
+            not covered
+            and (float(point_threshold) - similarity) <= float(borderline_band)
         )
         if covered:
             covered_count += 1

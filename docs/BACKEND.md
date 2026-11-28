@@ -405,7 +405,8 @@ For each key point:
 ```text
 similarity_i = max_j cosine(key_point_i, sentence_j)
 covered_i    = similarity_i >= point_threshold
-borderline_i = abs(similarity_i - point_threshold) <= borderline_band
+borderline_i = (not covered_i)
+               and (point_threshold - similarity_i) <= borderline_band
 ```
 
 Then:
@@ -423,7 +424,7 @@ Defaults: `point_threshold = 0.55`, `borderline_band = 0.10`.
 |---|---|
 | `degenerate_transcript` | transcript is empty or fewer than 3 words |
 | `zero_coverage` | `covered_count == 0` |
-| `borderline` | any key point is within the borderline band |
+| `borderline` | any uncovered key point is a near miss inside the borderline band |
 | `low_ocr_confidence` | `ocr_confidence < 0.55` |
 | `manual_question` | `grading_mode == "manual"`; not demoed |
 

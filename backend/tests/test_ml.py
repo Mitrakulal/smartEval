@@ -92,18 +92,28 @@ def test_score_borderline(monkeypatch: pytest.MonkeyPatch) -> None:
         return [_unit(0).tolist() for _ in texts]
 
     monkeypatch.setattr(score_module, "embed_texts", fake_embed)
-    # Cosine similarity with e0 is exactly 0.60, inside the 0.55 +/- 0.10 band.
-    borderline = np.zeros(EMBEDDING_DIM, dtype=np.float32)
-    borderline[0] = 0.6
-    borderline[1] = 0.8
+
+    # A covered point slightly above the threshold should not be flagged.
+    covered_near = np.zeros(EMBEDDING_DIM, dtype=np.float32)
+    covered_near[0] = 0.6
+    covered_near[1] = 0.8
+
+    # An uncovered near miss (0.50 vs threshold 0.55) should be flagged.
+    near_miss = np.zeros(EMBEDDING_DIM, dtype=np.float32)
+    near_miss[0] = 0.5
+    near_miss[1] = float(np.sqrt(0.75))
+
     key_points = [
-        {"id": 1, "text": "alpha", "embedding": vec_to_blob(borderline.tolist())}
+        {"id": 1, "text": "alpha", "embedding": vec_to_blob(covered_near.tolist())},
+        {"id": 2, "text": "beta", "embedding": vec_to_blob(near_miss.tolist())},
     ]
 
-    result = score_answer("alpha", key_points, 3.0, 0.55, 0.10)
+    result = score_answer("alpha idea here", key_points, 3.0, 0.55, 0.10)
     assert result.matches[0]["covered"] is True
-    assert result.matches[0]["borderline"] is True
-    assert "borderline" in result.flags
+    assert result.matches[0]["borderline"] is False
+    assert result.matches[1]["covered"] is False
+    assert result.matches[1]["borderline"] is True
+    assert result.flags == ["borderline"]
 
 
 def test_fixture_transcription_and_cache(tmp_path, monkeypatch: pytest.MonkeyPatch) -> None:
