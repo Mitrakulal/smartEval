@@ -245,7 +245,7 @@ marks = round_half(max_marks × coverage)
 **Step 4 — borderline**
 
 Flag the answer if either:
-- any `simᵢ` falls within `point_threshold ± borderline_band` (default band 0.10), or
+- any uncovered `simᵢ` is a near miss within `borderline_band` below `point_threshold` (default band 0.10), or
 - `max_marks × coverage` lands within `borderline_band` of a half-mark boundary
   (i.e. the rounding decision flips the result)
 
